@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpx shadcn@latest add:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm run lint)",
+      "Bash(pnpm run dev)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
