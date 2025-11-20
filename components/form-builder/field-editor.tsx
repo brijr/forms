@@ -5,10 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Separator } from "@/components/ui/separator"
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
@@ -81,17 +79,15 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
     localField.type === "textarea"
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold">Field Settings</h3>
-        <Button variant="ghost" size="icon-xs" onClick={onClose}>
+        <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Field Settings</h3>
+        <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
           <XIcon className="h-4 w-4" />
         </Button>
       </div>
 
-      <Separator />
-
-      <FieldGroup>
+      <FieldGroup className="space-y-6">
         {/* Basic Settings */}
         <Field>
           <FieldLabel htmlFor="field-label">Label</FieldLabel>
@@ -100,10 +96,8 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
             value={localField.label}
             onChange={(e) => handleUpdate({ label: e.target.value })}
             placeholder="Field label"
+            className="font-normal"
           />
-          <FieldDescription>
-            The label displayed above the field
-          </FieldDescription>
         </Field>
 
         <Field>
@@ -113,10 +107,8 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
             value={localField.name}
             onChange={(e) => handleUpdate({ name: e.target.value })}
             placeholder="fieldName"
+            className="font-normal"
           />
-          <FieldDescription>
-            The field name used in form data (no spaces)
-          </FieldDescription>
         </Field>
 
         <Field>
@@ -126,6 +118,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
             value={localField.placeholder || ""}
             onChange={(e) => handleUpdate({ placeholder: e.target.value })}
             placeholder="Enter placeholder text"
+            className="font-normal"
           />
         </Field>
 
@@ -137,6 +130,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
             onChange={(e) => handleUpdate({ description: e.target.value })}
             placeholder="Optional helper text"
             rows={2}
+            className="font-normal"
           />
         </Field>
 
@@ -153,6 +147,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
               }
               min={1}
               max={20}
+              className="font-normal"
             />
           </Field>
         )}
@@ -168,6 +163,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                 onChange={(e) =>
                   handleUpdate({ min: parseInt(e.target.value) || 0 })
                 }
+                className="font-normal"
               />
             </Field>
 
@@ -180,6 +176,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                 onChange={(e) =>
                   handleUpdate({ max: parseInt(e.target.value) || 100 })
                 }
+                className="font-normal"
               />
             </Field>
 
@@ -193,6 +190,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                   handleUpdate({ step: parseInt(e.target.value) || 1 })
                 }
                 min={1}
+                className="font-normal"
               />
             </Field>
           </>
@@ -201,16 +199,16 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
         {/* Options for select, radio, checkbox-group */}
         {hasOptions && "options" in localField && (
           <Field>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-3">
               <FieldLabel>Options</FieldLabel>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onClick={handleAddOption}
-                className="h-7"
+                className="h-8 font-normal"
               >
-                <PlusIcon className="h-3 w-3 mr-1" />
-                Add Option
+                <PlusIcon className="h-3.5 w-3.5 mr-1.5" />
+                Add
               </Button>
             </div>
             <div className="space-y-2">
@@ -222,7 +220,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                       handleOptionUpdate(index, { label: e.target.value })
                     }
                     placeholder="Label"
-                    className="flex-1"
+                    className="flex-1 font-normal"
                   />
                   <Input
                     value={option.value}
@@ -230,14 +228,14 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                       handleOptionUpdate(index, { value: e.target.value })
                     }
                     placeholder="Value"
-                    className="flex-1"
+                    className="flex-1 font-normal"
                   />
                   {localField.options.length > 1 && (
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => handleRemoveOption(index)}
-                      className="text-destructive hover:text-destructive"
+                      className="text-muted-foreground hover:text-destructive h-9 w-9"
                     >
                       <Trash2Icon className="h-4 w-4" />
                     </Button>
@@ -248,12 +246,10 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
           </Field>
         )}
 
-        <Separator />
-
         {/* Validation Settings */}
-        <div>
-          <h4 className="mb-3 text-sm font-semibold">Validation</h4>
-          <FieldGroup>
+        <div className="space-y-6 pt-2">
+          <h4 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Validation</h4>
+          <FieldGroup className="space-y-6">
             <Field orientation="horizontal">
               <Checkbox
                 id="field-required"
@@ -262,14 +258,9 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                   handleValidationUpdate({ required: checked })
                 }
               />
-              <div className="flex-1">
-                <FieldLabel htmlFor="field-required" className="font-normal">
-                  Required field
-                </FieldLabel>
-                <FieldDescription>
-                  User must fill this field
-                </FieldDescription>
-              </div>
+              <FieldLabel htmlFor="field-required" className="font-normal">
+                Required field
+              </FieldLabel>
             </Field>
 
             {supportsLength && (
@@ -291,6 +282,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                     }
                     placeholder="No minimum"
                     min={0}
+                    className="font-normal"
                   />
                 </Field>
 
@@ -311,6 +303,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                     }
                     placeholder="No maximum"
                     min={0}
+                    className="font-normal"
                   />
                 </Field>
 
@@ -325,10 +318,8 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                       handleValidationUpdate({ pattern: e.target.value })
                     }
                     placeholder="e.g., ^[A-Za-z]+$"
+                    className="font-normal"
                   />
-                  <FieldDescription>
-                    Regular expression for validation
-                  </FieldDescription>
                 </Field>
               </>
             )}
@@ -349,6 +340,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                       })
                     }
                     placeholder="No minimum"
+                    className="font-normal"
                   />
                 </Field>
 
@@ -366,6 +358,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                       })
                     }
                     placeholder="No maximum"
+                    className="font-normal"
                   />
                 </Field>
               </>
@@ -383,6 +376,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                 }
                 placeholder="Optional custom validation message"
                 rows={2}
+                className="font-normal"
               />
             </Field>
           </FieldGroup>
