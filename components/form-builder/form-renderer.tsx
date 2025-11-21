@@ -249,7 +249,7 @@ export function FormRenderer({
                           )}
                           onCheckedChange={(checked) => {
                             if (checked) {
-                              field.pushValue(option.value)
+                              field.pushValue(option.value as never)
                             } else {
                               const index = (
                                 field.state.value as string[]
@@ -407,7 +407,7 @@ export function FormRenderer({
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>
-                    {fieldConfig.label}: {field.state.value}
+                    {fieldConfig.label}: {String(field.state.value as number)}
                   </FieldLabel>
                   <Slider
                     id={field.name}

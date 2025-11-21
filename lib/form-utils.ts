@@ -66,17 +66,18 @@ function applyValidationRules(
 
   // String validations
   if (result instanceof z.ZodString) {
+    let stringSchema: z.ZodTypeAny = result
     if (validation.email) {
-      result = result.email("Enter a valid email address.")
+      stringSchema = (stringSchema as z.ZodString).email("Enter a valid email address.")
     }
     if (validation.minLength !== undefined) {
-      result = result.min(
+      stringSchema = (stringSchema as z.ZodString).min(
         validation.minLength,
         `Must be at least ${validation.minLength} characters.`
       )
     }
     if (validation.maxLength !== undefined) {
-      result = result.max(
+      stringSchema = (stringSchema as z.ZodString).max(
         validation.maxLength,
         `Must be at most ${validation.maxLength} characters.`
       )
@@ -84,58 +85,65 @@ function applyValidationRules(
     if (validation.pattern) {
       try {
         const regex = new RegExp(validation.pattern)
-        result = result.regex(regex, validation.custom || "Invalid format.")
+        stringSchema = (stringSchema as z.ZodString).regex(regex, validation.custom || "Invalid format.")
       } catch {
         // Invalid regex pattern, skip
         console.warn("Invalid regex pattern:", validation.pattern)
       }
     }
     if (!validation.required) {
-      result = result.optional()
+      stringSchema = stringSchema.optional()
     }
+    result = stringSchema
   }
 
   // Number validations
   if (result instanceof z.ZodNumber) {
+    let numberSchema: z.ZodTypeAny = result
     if (validation.min !== undefined) {
-      result = result.min(validation.min, `Must be at least ${validation.min}.`)
+      numberSchema = (numberSchema as z.ZodNumber).min(validation.min, `Must be at least ${validation.min}.`)
     }
     if (validation.max !== undefined) {
-      result = result.max(validation.max, `Must be at most ${validation.max}.`)
+      numberSchema = (numberSchema as z.ZodNumber).max(validation.max, `Must be at most ${validation.max}.`)
     }
     if (!validation.required) {
-      result = result.optional()
+      numberSchema = numberSchema.optional()
     }
+    result = numberSchema
   }
 
   // Array validations
   if (result instanceof z.ZodArray) {
+    let arraySchema: z.ZodTypeAny = result
     if (validation.minLength !== undefined) {
-      result = result.min(
+      arraySchema = (arraySchema as z.ZodArray<any>).min(
         validation.minLength,
         `Select at least ${validation.minLength} option${validation.minLength !== 1 ? "s" : ""}.`
       )
     }
     if (validation.maxLength !== undefined) {
-      result = result.max(
+      arraySchema = (arraySchema as z.ZodArray<any>).max(
         validation.maxLength,
         `Select at most ${validation.maxLength} option${validation.maxLength !== 1 ? "s" : ""}.`
       )
     }
     if (!validation.required) {
-      result = result.optional()
+      arraySchema = arraySchema.optional()
     }
+    result = arraySchema
   }
 
   // Boolean validations
   if (result instanceof z.ZodBoolean) {
+    let booleanSchema: z.ZodTypeAny = result
     if (validation.required) {
-      result = result.refine((val) => val === true, {
+      booleanSchema = (booleanSchema as z.ZodBoolean).refine((val) => val === true, {
         message: validation.custom || "This field is required.",
       })
     } else {
-      result = result.optional()
+      booleanSchema = booleanSchema.optional()
     }
+    result = booleanSchema
   }
 
   return result

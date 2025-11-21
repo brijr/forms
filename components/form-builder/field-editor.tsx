@@ -23,7 +23,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
   const [localField, setLocalField] = useState(field)
 
   const handleUpdate = (updates: Partial<FieldConfig>) => {
-    const updated = { ...localField, ...updates }
+    const updated = { ...localField, ...updates } as FieldConfig
     setLocalField(updated)
     onUpdate(updated)
   }
@@ -255,7 +255,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                 id="field-required"
                 checked={localField.validation?.required ?? false}
                 onCheckedChange={(checked) =>
-                  handleValidationUpdate({ required: checked })
+                  handleValidationUpdate({ required: checked === true })
                 }
               />
               <FieldLabel htmlFor="field-required" className="font-normal">
