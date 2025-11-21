@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { useForm } from "@tanstack/react-form"
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { useForm } from "@tanstack/react-form";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Switch } from "@/components/ui/switch"
-import { Slider } from "@/components/ui/slider"
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 import {
   Field,
   FieldContent,
@@ -25,14 +25,14 @@ import {
   FieldLabel,
   FieldSet,
   FieldLegend,
-} from "@/components/ui/field"
-import type { FormConfig, FieldConfig } from "@/lib/form-config"
-import { generateFormSchema, getDefaultValues } from "@/lib/form-utils"
+} from "@/components/ui/field";
+import type { FormConfig, FieldConfig } from "@/lib/form-config";
+import { generateFormSchema, getDefaultValues } from "@/lib/form-utils";
 
 interface FormRendererProps {
-  config: FormConfig
-  onSubmit?: (values: Record<string, unknown>) => void
-  showSubmitButton?: boolean
+  config: FormConfig;
+  onSubmit?: (values: Record<string, unknown>) => void;
+  showSubmitButton?: boolean;
 }
 
 export function FormRenderer({
@@ -40,8 +40,8 @@ export function FormRenderer({
   onSubmit,
   showSubmitButton = true,
 }: FormRendererProps) {
-  const formSchema = generateFormSchema(config)
-  const defaultValues = getDefaultValues(config)
+  const formSchema = generateFormSchema(config);
+  const defaultValues = getDefaultValues(config);
 
   const form = useForm({
     defaultValues,
@@ -50,14 +50,14 @@ export function FormRenderer({
     },
     onSubmit: async ({ value }) => {
       if (onSubmit) {
-        onSubmit(value)
+        onSubmit(value);
       } else {
         toast.success("Form submitted successfully!", {
           description: JSON.stringify(value, null, 2),
-        })
+        });
       }
     },
-  })
+  });
 
   const renderField = (fieldConfig: FieldConfig) => {
     switch (fieldConfig.type) {
@@ -70,7 +70,7 @@ export function FormRenderer({
             // eslint-disable-next-line react/no-children-prop
             children={(field) => {
               const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>
@@ -94,10 +94,10 @@ export function FormRenderer({
                   )}
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-              )
+              );
             }}
           />
-        )
+        );
 
       case "number":
         return (
@@ -107,7 +107,7 @@ export function FormRenderer({
             // eslint-disable-next-line react/no-children-prop
             children={(field) => {
               const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>
@@ -132,10 +132,10 @@ export function FormRenderer({
                   )}
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-              )
+              );
             }}
           />
-        )
+        );
 
       case "textarea":
         return (
@@ -145,7 +145,7 @@ export function FormRenderer({
             // eslint-disable-next-line react/no-children-prop
             children={(field) => {
               const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>
@@ -168,10 +168,10 @@ export function FormRenderer({
                   )}
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-              )
+              );
             }}
           />
-        )
+        );
 
       case "select":
         return (
@@ -181,7 +181,7 @@ export function FormRenderer({
             // eslint-disable-next-line react/no-children-prop
             children={(field) => {
               const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>
@@ -193,7 +193,11 @@ export function FormRenderer({
                     onValueChange={field.handleChange}
                   >
                     <SelectTrigger id={field.name} aria-invalid={isInvalid}>
-                      <SelectValue placeholder={fieldConfig.placeholder || "Select an option"} />
+                      <SelectValue
+                        placeholder={
+                          fieldConfig.placeholder || "Select an option"
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {fieldConfig.options.map((option) => (
@@ -210,10 +214,10 @@ export function FormRenderer({
                   )}
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-              )
+              );
             }}
           />
-        )
+        );
 
       case "checkbox-group":
         return (
@@ -224,7 +228,7 @@ export function FormRenderer({
             // eslint-disable-next-line react/no-children-prop
             children={(field) => {
               const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <FieldSet>
                   <FieldLegend variant="label">{fieldConfig.label}</FieldLegend>
@@ -249,13 +253,13 @@ export function FormRenderer({
                           )}
                           onCheckedChange={(checked) => {
                             if (checked) {
-                              field.pushValue(option.value as never)
+                              field.pushValue(option.value as never);
                             } else {
                               const index = (
                                 field.state.value as string[]
-                              ).indexOf(option.value)
+                              ).indexOf(option.value);
                               if (index > -1) {
-                                field.removeValue(index)
+                                field.removeValue(index);
                               }
                             }
                           }}
@@ -271,10 +275,10 @@ export function FormRenderer({
                   </FieldGroup>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </FieldSet>
-              )
+              );
             }}
           />
-        )
+        );
 
       case "radio":
         return (
@@ -284,7 +288,7 @@ export function FormRenderer({
             // eslint-disable-next-line react/no-children-prop
             children={(field) => {
               const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <FieldSet>
                   <FieldLegend variant="label">{fieldConfig.label}</FieldLegend>
@@ -303,7 +307,10 @@ export function FormRenderer({
                         key={option.value}
                         htmlFor={`${field.name}-${option.value}`}
                       >
-                        <Field orientation="horizontal" data-invalid={isInvalid}>
+                        <Field
+                          orientation="horizontal"
+                          data-invalid={isInvalid}
+                        >
                           <FieldContent>
                             <span className="text-sm">{option.label}</span>
                           </FieldContent>
@@ -318,10 +325,10 @@ export function FormRenderer({
                   </RadioGroup>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </FieldSet>
-              )
+              );
             }}
           />
-        )
+        );
 
       case "checkbox":
         return (
@@ -331,7 +338,7 @@ export function FormRenderer({
             // eslint-disable-next-line react/no-children-prop
             children={(field) => {
               const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field orientation="horizontal" data-invalid={isInvalid}>
                   <Checkbox
@@ -353,10 +360,10 @@ export function FormRenderer({
                   </FieldContent>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-              )
+              );
             }}
           />
-        )
+        );
 
       case "switch":
         return (
@@ -366,7 +373,7 @@ export function FormRenderer({
             // eslint-disable-next-line react/no-children-prop
             children={(field) => {
               const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field orientation="horizontal" data-invalid={isInvalid}>
                   <FieldContent>
@@ -390,10 +397,10 @@ export function FormRenderer({
                     aria-invalid={isInvalid}
                   />
                 </Field>
-              )
+              );
             }}
           />
-        )
+        );
 
       case "slider":
         return (
@@ -403,7 +410,7 @@ export function FormRenderer({
             // eslint-disable-next-line react/no-children-prop
             children={(field) => {
               const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>
@@ -426,21 +433,21 @@ export function FormRenderer({
                   )}
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-              )
+              );
             }}
           />
-        )
+        );
 
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
     <form
       onSubmit={(e) => {
-        e.preventDefault()
-        form.handleSubmit()
+        e.preventDefault();
+        form.handleSubmit();
       }}
       className="space-y-6"
     >
@@ -458,15 +465,11 @@ export function FormRenderer({
       {showSubmitButton && (
         <div className="flex gap-2">
           <Button type="submit">Submit</Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => form.reset()}
-          >
+          <Button type="button" variant="outline" onClick={() => form.reset()}>
             Reset
           </Button>
         </div>
       )}
     </form>
-  )
+  );
 }

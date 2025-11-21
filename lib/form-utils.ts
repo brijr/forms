@@ -1,58 +1,58 @@
-import { z } from "zod"
-import type { FieldConfig, FormConfig, ValidationRule } from "./form-config"
+import { z } from "zod";
+import type { FieldConfig, FormConfig, ValidationRule } from "./form-config";
 
 /**
  * Generates a Zod schema for a single field based on its configuration
  */
 export function generateFieldSchema(field: FieldConfig): z.ZodTypeAny {
-  let schema: z.ZodTypeAny
+  let schema: z.ZodTypeAny;
 
   // Base schema based on field type
   switch (field.type) {
     case "text":
     case "email":
     case "textarea":
-      schema = z.string()
-      break
+      schema = z.string();
+      break;
 
     case "number":
-      schema = z.number()
-      break
+      schema = z.number();
+      break;
 
     case "select":
     case "radio":
       // Create union of valid option values
-      const options = field.options.map((opt) => opt.value)
+      const options = field.options.map((opt) => opt.value);
       if (options.length > 0) {
-        schema = z.enum(options as [string, ...string[]])
+        schema = z.enum(options as [string, ...string[]]);
       } else {
-        schema = z.string()
+        schema = z.string();
       }
-      break
+      break;
 
     case "checkbox-group":
-      schema = z.array(z.string())
-      break
+      schema = z.array(z.string());
+      break;
 
     case "checkbox":
     case "switch":
-      schema = z.boolean()
-      break
+      schema = z.boolean();
+      break;
 
     case "slider":
-      schema = z.number()
-      break
+      schema = z.number();
+      break;
 
     default:
-      schema = z.string()
+      schema = z.string();
   }
 
   // Apply validation rules
   if (field.validation) {
-    schema = applyValidationRules(schema, field.validation)
+    schema = applyValidationRules(schema, field.validation);
   }
 
-  return schema
+  return schema;
 }
 
 /**
@@ -62,104 +62,124 @@ function applyValidationRules(
   schema: z.ZodTypeAny,
   validation: ValidationRule
 ): z.ZodTypeAny {
-  let result = schema
+  let result = schema;
 
   // String validations
   if (result instanceof z.ZodString) {
-    let stringSchema: z.ZodTypeAny = result
+    let stringSchema: z.ZodTypeAny = result;
     if (validation.email) {
-      stringSchema = (stringSchema as z.ZodString).email("Enter a valid email address.")
+      stringSchema = (stringSchema as z.ZodString).email(
+        "Enter a valid email address."
+      );
     }
     if (validation.minLength !== undefined) {
       stringSchema = (stringSchema as z.ZodString).min(
         validation.minLength,
         `Must be at least ${validation.minLength} characters.`
-      )
+      );
     }
     if (validation.maxLength !== undefined) {
       stringSchema = (stringSchema as z.ZodString).max(
         validation.maxLength,
         `Must be at most ${validation.maxLength} characters.`
-      )
+      );
     }
     if (validation.pattern) {
       try {
-        const regex = new RegExp(validation.pattern)
-        stringSchema = (stringSchema as z.ZodString).regex(regex, validation.custom || "Invalid format.")
+        const regex = new RegExp(validation.pattern);
+        stringSchema = (stringSchema as z.ZodString).regex(
+          regex,
+          validation.custom || "Invalid format."
+        );
       } catch {
         // Invalid regex pattern, skip
-        console.warn("Invalid regex pattern:", validation.pattern)
+        console.warn("Invalid regex pattern:", validation.pattern);
       }
     }
     if (!validation.required) {
-      stringSchema = stringSchema.optional()
+      stringSchema = stringSchema.optional();
     }
-    result = stringSchema
+    result = stringSchema;
   }
 
   // Number validations
   if (result instanceof z.ZodNumber) {
-    let numberSchema: z.ZodTypeAny = result
+    let numberSchema: z.ZodTypeAny = result;
     if (validation.min !== undefined) {
-      numberSchema = (numberSchema as z.ZodNumber).min(validation.min, `Must be at least ${validation.min}.`)
+      numberSchema = (numberSchema as z.ZodNumber).min(
+        validation.min,
+        `Must be at least ${validation.min}.`
+      );
     }
     if (validation.max !== undefined) {
-      numberSchema = (numberSchema as z.ZodNumber).max(validation.max, `Must be at most ${validation.max}.`)
+      numberSchema = (numberSchema as z.ZodNumber).max(
+        validation.max,
+        `Must be at most ${validation.max}.`
+      );
     }
     if (!validation.required) {
-      numberSchema = numberSchema.optional()
+      numberSchema = numberSchema.optional();
     }
-    result = numberSchema
+    result = numberSchema;
   }
 
   // Array validations
   if (result instanceof z.ZodArray) {
-    let arraySchema: z.ZodTypeAny = result
+    let arraySchema: z.ZodTypeAny = result;
     if (validation.minLength !== undefined) {
       arraySchema = (arraySchema as z.ZodArray<any>).min(
         validation.minLength,
-        `Select at least ${validation.minLength} option${validation.minLength !== 1 ? "s" : ""}.`
-      )
+        `Select at least ${validation.minLength} option${
+          validation.minLength !== 1 ? "s" : ""
+        }.`
+      );
     }
     if (validation.maxLength !== undefined) {
       arraySchema = (arraySchema as z.ZodArray<any>).max(
         validation.maxLength,
-        `Select at most ${validation.maxLength} option${validation.maxLength !== 1 ? "s" : ""}.`
-      )
+        `Select at most ${validation.maxLength} option${
+          validation.maxLength !== 1 ? "s" : ""
+        }.`
+      );
     }
     if (!validation.required) {
-      arraySchema = arraySchema.optional()
+      arraySchema = arraySchema.optional();
     }
-    result = arraySchema
+    result = arraySchema;
   }
 
   // Boolean validations
   if (result instanceof z.ZodBoolean) {
-    let booleanSchema: z.ZodTypeAny = result
+    let booleanSchema: z.ZodTypeAny = result;
     if (validation.required) {
-      booleanSchema = (booleanSchema as z.ZodBoolean).refine((val) => val === true, {
-        message: validation.custom || "This field is required.",
-      })
+      booleanSchema = (booleanSchema as z.ZodBoolean).refine(
+        (val) => val === true,
+        {
+          message: validation.custom || "This field is required.",
+        }
+      );
     } else {
-      booleanSchema = booleanSchema.optional()
+      booleanSchema = booleanSchema.optional();
     }
-    result = booleanSchema
+    result = booleanSchema;
   }
 
-  return result
+  return result;
 }
 
 /**
  * Generates a complete Zod schema for the entire form
  */
-export function generateFormSchema(formConfig: FormConfig): z.ZodObject<Record<string, z.ZodTypeAny>> {
-  const shape: Record<string, z.ZodTypeAny> = {}
+export function generateFormSchema(
+  formConfig: FormConfig
+): z.ZodObject<Record<string, z.ZodTypeAny>> {
+  const shape: Record<string, z.ZodTypeAny> = {};
 
   formConfig.fields.forEach((field) => {
-    shape[field.name] = generateFieldSchema(field)
-  })
+    shape[field.name] = generateFieldSchema(field);
+  });
 
-  return z.object(shape)
+  return z.object(shape);
 }
 
 /**
@@ -168,11 +188,11 @@ export function generateFormSchema(formConfig: FormConfig): z.ZodObject<Record<s
 export function getDefaultValues(
   formConfig: FormConfig
 ): Record<string, unknown> {
-  const defaults: Record<string, unknown> = {}
+  const defaults: Record<string, unknown> = {};
 
   formConfig.fields.forEach((field) => {
     if (field.defaultValue !== undefined) {
-      defaults[field.name] = field.defaultValue
+      defaults[field.name] = field.defaultValue;
     } else {
       // Provide sensible defaults based on type
       switch (field.type) {
@@ -181,59 +201,60 @@ export function getDefaultValues(
         case "textarea":
         case "select":
         case "radio":
-          defaults[field.name] = ""
-          break
+          defaults[field.name] = "";
+          break;
         case "number":
         case "slider":
-          defaults[field.name] = 0
-          break
+          defaults[field.name] = 0;
+          break;
         case "checkbox":
         case "switch":
-          defaults[field.name] = false
-          break
+          defaults[field.name] = false;
+          break;
         case "checkbox-group":
-          defaults[field.name] = []
-          break
+          defaults[field.name] = [];
+          break;
       }
     }
-  })
+  });
 
-  return defaults
+  return defaults;
 }
 
 /**
  * Validates a form configuration to ensure it's valid
  */
 export function validateFormConfig(config: unknown): config is FormConfig {
-  if (!config || typeof config !== "object") return false
+  if (!config || typeof config !== "object") return false;
 
-  const obj = config as Record<string, unknown>
-  if (!obj.id || !obj.title || !Array.isArray(obj.fields)) return false
+  const obj = config as Record<string, unknown>;
+  if (!obj.id || !obj.title || !Array.isArray(obj.fields)) return false;
 
   // Validate each field
   for (const field of obj.fields) {
-    if (!field || typeof field !== "object") return false
-    const fieldObj = field as Record<string, unknown>
-    if (!fieldObj.id || !fieldObj.type || !fieldObj.name || !fieldObj.label) return false
+    if (!field || typeof field !== "object") return false;
+    const fieldObj = field as Record<string, unknown>;
+    if (!fieldObj.id || !fieldObj.type || !fieldObj.name || !fieldObj.label)
+      return false;
   }
 
-  return true
+  return true;
 }
 
 /**
  * Downloads form configuration as JSON file
  */
 export function downloadFormConfig(formConfig: FormConfig): void {
-  const json = JSON.stringify(formConfig, null, 2)
-  const blob = new Blob([json], { type: "application/json" })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement("a")
-  link.href = url
-  link.download = `${formConfig.id}.json`
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url)
+  const json = JSON.stringify(formConfig, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${formConfig.id}.json`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
 /**
@@ -241,13 +262,13 @@ export function downloadFormConfig(formConfig: FormConfig): void {
  */
 export function parseFormConfig(jsonString: string): FormConfig | null {
   try {
-    const config = JSON.parse(jsonString)
+    const config = JSON.parse(jsonString);
     if (validateFormConfig(config)) {
-      return config
+      return config;
     }
-    return null
+    return null;
   } catch (e) {
-    console.error("Failed to parse form config:", e)
-    return null
+    console.error("Failed to parse form config:", e);
+    return null;
   }
 }

@@ -1,21 +1,26 @@
 "use client";
 
 import { useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import {
   PlusIcon,
-  Trash2Icon,
-  ChevronUpIcon,
-  ChevronDownIcon,
   TypeIcon,
   MailIcon,
   HashIcon,
@@ -32,13 +37,53 @@ import type { FormConfig, FieldType, FieldConfig } from "@/lib/form-config";
 import { createDefaultField, createEmptyForm } from "@/lib/form-config";
 import { downloadFormConfig, parseFormConfig } from "@/lib/form-utils";
 import { FormRenderer } from "./form-renderer";
-import { FieldEditor } from "./field-editor";
+import { SortableField } from "./sortable-field";
+
+type ToolboxItem = {
+  type: FieldType;
+  label: string;
+  icon: React.ElementType;
+};
+
+const TOOLBOX_CATEGORIES: { name: string; items: ToolboxItem[] }[] = [
+  {
+    name: "Basic Fields",
+    items: [
+      { type: "text", label: "Text", icon: TypeIcon },
+      { type: "email", label: "Email", icon: MailIcon },
+      { type: "number", label: "Number", icon: HashIcon },
+      { type: "textarea", label: "Textarea", icon: AlignLeftIcon },
+    ],
+  },
+  {
+    name: "Selection & Choice",
+    items: [
+      { type: "select", label: "Select", icon: ChevronDownCircleIcon },
+      { type: "radio", label: "Radio", icon: CircleDotIcon },
+      { type: "checkbox-group", label: "Checkboxes", icon: CheckSquareIcon },
+      { type: "checkbox", label: "Single Check", icon: SquareCheckIcon },
+      { type: "switch", label: "Switch", icon: ToggleRightIcon },
+      { type: "slider", label: "Slider", icon: SlidersHorizontalIcon },
+    ],
+  },
+];
 
 export function FormBuilder() {
   const [formConfig, setFormConfig] = useState<FormConfig>(createEmptyForm());
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"builder" | "preview" | "json">(
     "builder"
+  );
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
   );
 
   const handleAddField = (type: FieldType) => {
@@ -50,10 +95,8 @@ export function FormBuilder() {
     setSelectedFieldId(newField.id);
 
     // Show toast notification
-    const fieldTypeLabel =
-      type.charAt(0).toUpperCase() + type.slice(1).replace("-", " ");
-    toast.success(`${fieldTypeLabel} field added`, {
-      description: "Configure the field in the right panel",
+    toast.success("Field added", {
+      description: `${type} field added to the form`,
     });
   };
 
@@ -67,24 +110,42 @@ export function FormBuilder() {
     }
   };
 
-  const handleMoveField = (fieldId: string, direction: "up" | "down") => {
-    const index = formConfig.fields.findIndex((f) => f.id === fieldId);
-    if (index === -1) return;
+  const handleDuplicateField = (fieldId: string) => {
+    const fieldToDuplicate = formConfig.fields.find((f) => f.id === fieldId);
+    if (!fieldToDuplicate) return;
 
-    if (direction === "up" && index > 0) {
-      const newFields = [...formConfig.fields];
-      [newFields[index - 1], newFields[index]] = [
-        newFields[index],
-        newFields[index - 1],
-      ];
-      setFormConfig({ ...formConfig, fields: newFields });
-    } else if (direction === "down" && index < formConfig.fields.length - 1) {
-      const newFields = [...formConfig.fields];
-      [newFields[index], newFields[index + 1]] = [
-        newFields[index + 1],
-        newFields[index],
-      ];
-      setFormConfig({ ...formConfig, fields: newFields });
+    const newField = {
+      ...fieldToDuplicate,
+      id: `field_${crypto.randomUUID()}`,
+      name: `${fieldToDuplicate.name}_copy`,
+      label: `${fieldToDuplicate.label} (Copy)`,
+    };
+
+    const index = formConfig.fields.findIndex((f) => f.id === fieldId);
+    const newFields = [...formConfig.fields];
+    newFields.splice(index + 1, 0, newField);
+
+    setFormConfig({
+      ...formConfig,
+      fields: newFields,
+    });
+    setSelectedFieldId(newField.id);
+    toast.success("Field duplicated");
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      setFormConfig((prev) => {
+        const oldIndex = prev.fields.findIndex((f) => f.id === active.id);
+        const newIndex = prev.fields.findIndex((f) => f.id === over?.id);
+
+        return {
+          ...prev,
+          fields: arrayMove(prev.fields, oldIndex, newIndex),
+        };
+      });
     }
   };
 
@@ -125,20 +186,18 @@ export function FormBuilder() {
     input.click();
   };
 
-  const selectedField = formConfig.fields.find((f) => f.id === selectedFieldId);
-
   return (
     <div className="flex h-screen flex-col">
       {/* Header */}
-      <div className="border-b px-8 py-6">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-8">
+      <div className="border-b px-6 py-4 bg-background">
+        <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4">
           <div className="flex-1 space-y-1">
             <Input
               value={formConfig.title}
               onChange={(e) =>
                 setFormConfig({ ...formConfig, title: e.target.value })
               }
-              className="text-2xl font-medium border-none shadow-none px-0 focus-visible:ring-0 h-auto"
+              className="text-xl font-semibold border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
               placeholder="Form Title"
             />
             <Input
@@ -146,17 +205,17 @@ export function FormBuilder() {
               onChange={(e) =>
                 setFormConfig({ ...formConfig, description: e.target.value })
               }
-              className="text-sm text-muted-foreground border-none shadow-none px-0 focus-visible:ring-0 h-auto"
+              className="text-sm text-muted-foreground border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
               placeholder="Form description (optional)"
             />
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex gap-1">
+            <div className="flex bg-muted/50 p-1 rounded-md">
               <Button
                 variant={viewMode === "builder" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("builder")}
-                className="font-normal"
+                className="h-8"
               >
                 Builder
               </Button>
@@ -164,7 +223,7 @@ export function FormBuilder() {
                 variant={viewMode === "preview" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("preview")}
-                className="font-normal"
+                className="h-8"
               >
                 Preview
               </Button>
@@ -172,7 +231,7 @@ export function FormBuilder() {
                 variant={viewMode === "json" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("json")}
-                className="font-normal"
+                className="h-8"
               >
                 JSON
               </Button>
@@ -180,18 +239,18 @@ export function FormBuilder() {
             <Separator orientation="vertical" className="h-6" />
             <div className="flex gap-2">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={handleImport}
-                className="font-normal"
+                className="h-9"
               >
                 Import
               </Button>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={handleExport}
-                className="font-normal"
+                className="h-9"
               >
                 Export
               </Button>
@@ -204,221 +263,97 @@ export function FormBuilder() {
       <div className="flex flex-1 overflow-hidden">
         {viewMode === "builder" && (
           <>
-            {/* Left Sidebar - Field List */}
-            <div className="w-80 overflow-y-auto border-r px-6 py-8">
-              <div className="space-y-8">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                      Add Field
+            {/* Left Sidebar - Toolbox */}
+            <div className="w-64 overflow-y-auto border-r bg-muted/10 p-4">
+              <div className="space-y-6">
+                <h2 className="text-sm font-semibold px-1">Fields</h2>
+                {TOOLBOX_CATEGORIES.map((category) => (
+                  <div key={category.name} className="space-y-2">
+                    <h3 className="text-xs font-medium text-muted-foreground px-1 uppercase tracking-wider">
+                      {category.name}
                     </h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Choose a field type to add to your form
-                    </p>
-                  </div>
-                  <Select
-                    onValueChange={(value) =>
-                      handleAddField(value as FieldType)
-                    }
-                  >
-                    <SelectTrigger className="h-11 font-normal w-full">
-                      <SelectValue placeholder="Select field type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="text">
-                        <div className="flex items-center gap-2">
-                          <TypeIcon className="h-4 w-4 text-muted-foreground" />
-                          <span>Text</span>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="email">
-                        <div className="flex items-center gap-2">
-                          <MailIcon className="h-4 w-4 text-muted-foreground" />
-                          <span>Email</span>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="number">
-                        <div className="flex items-center gap-2">
-                          <HashIcon className="h-4 w-4 text-muted-foreground" />
-                          <span>Number</span>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="textarea">
-                        <div className="flex items-center gap-2">
-                          <AlignLeftIcon className="h-4 w-4 text-muted-foreground" />
-                          <span>Textarea</span>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="select">
-                        <div className="flex items-center gap-2">
-                          <ChevronDownCircleIcon className="h-4 w-4 text-muted-foreground" />
-                          <span>Select</span>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="checkbox-group">
-                        <div className="flex items-center gap-2">
-                          <CheckSquareIcon className="h-4 w-4 text-muted-foreground" />
-                          <span>Checkbox Group</span>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="radio">
-                        <div className="flex items-center gap-2">
-                          <CircleDotIcon className="h-4 w-4 text-muted-foreground" />
-                          <span>Radio Group</span>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="checkbox">
-                        <div className="flex items-center gap-2">
-                          <SquareCheckIcon className="h-4 w-4 text-muted-foreground" />
-                          <span>Checkbox</span>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="switch">
-                        <div className="flex items-center gap-2">
-                          <ToggleRightIcon className="h-4 w-4 text-muted-foreground" />
-                          <span>Switch</span>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="slider">
-                        <div className="flex items-center gap-2">
-                          <SlidersHorizontalIcon className="h-4 w-4 text-muted-foreground" />
-                          <span>Slider</span>
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-3">
-                  <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                    Fields ({formConfig.fields.length})
-                  </h3>
-                  {formConfig.fields.length === 0 ? (
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      No fields yet. Add a field to get started.
-                    </p>
-                  ) : (
-                    <div className="space-y-3">
-                      {formConfig.fields.map((field, index) => (
-                        <div
-                          key={field.id}
-                          className={`border rounded-sm p-4 cursor-pointer transition-colors ${
-                            selectedFieldId === field.id
-                              ? "border-foreground bg-muted/50"
-                              : "border-border"
-                          }`}
-                          onClick={() => setSelectedFieldId(field.id)}
+                    <div className="grid grid-cols-2 gap-2">
+                      {category.items.map((item) => (
+                        <Button
+                          key={item.type}
+                          variant="outline"
+                          size="sm"
+                          className="flex flex-col items-center justify-center h-16 gap-1 hover:border-primary hover:text-primary transition-all shadow-sm"
+                          onClick={() => handleAddField(item.type)}
                         >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1 min-w-0 space-y-1">
-                              <p className="text-sm font-medium truncate">
-                                {field.label}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {field.type}
-                              </p>
-                            </div>
-                            <div className="flex gap-0.5">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleMoveField(field.id, "up");
-                                }}
-                                disabled={index === 0}
-                                className="h-7 w-7"
-                              >
-                                <ChevronUpIcon className="h-3.5 w-3.5" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleMoveField(field.id, "down");
-                                }}
-                                disabled={
-                                  index === formConfig.fields.length - 1
-                                }
-                                className="h-7 w-7"
-                              >
-                                <ChevronDownIcon className="h-3.5 w-3.5" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDeleteField(field.id);
-                                }}
-                                className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                              >
-                                <Trash2Icon className="h-3.5 w-3.5" />
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
+                          <item.icon className="h-5 w-5" />
+                          <span className="text-[10px] font-medium">
+                            {item.label}
+                          </span>
+                        </Button>
                       ))}
                     </div>
-                  )}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Middle - Preview */}
-            <div className="flex-1 overflow-y-auto px-12 py-16">
-              <div className="mx-auto max-w-2xl">
+            {/* Center - Canvas */}
+            <div className="flex-1 overflow-y-auto bg-muted/20 p-8">
+              <div className="mx-auto max-w-3xl min-h-full">
                 {formConfig.fields.length === 0 ? (
-                  <div className="flex h-full min-h-[400px] items-center justify-center border border-dashed rounded-sm p-16">
+                  <div className="flex h-[500px] items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/20 bg-background/50">
                     <div className="text-center space-y-4">
-                      <PlusIcon className="mx-auto h-10 w-10 text-muted-foreground/50" />
-                      <div className="space-y-2">
-                        <h3 className="text-base font-medium">No fields yet</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                          Add a field from the left sidebar to get started
+                      <div className="mx-auto h-12 w-12 rounded-full bg-muted flex items-center justify-center">
+                        <PlusIcon className="h-6 w-6 text-muted-foreground" />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="font-medium">Start Building</h3>
+                        <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+                          Select a field from the toolbox to add it to your form
                         </p>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <FormRenderer config={formConfig} showSubmitButton={false} />
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={formConfig.fields.map((f) => f.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="space-y-4 pb-20">
+                        {formConfig.fields.map((field) => (
+                          <SortableField
+                            key={field.id}
+                            field={field}
+                            isSelected={selectedFieldId === field.id}
+                            onSelect={() => setSelectedFieldId(field.id)}
+                            onDelete={() => handleDeleteField(field.id)}
+                            onDuplicate={() => handleDuplicateField(field.id)}
+                            onUpdate={handleUpdateField}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 )}
               </div>
-            </div>
-
-            {/* Right Sidebar - Field Editor */}
-            <div className="w-80 overflow-y-auto border-l px-6 py-8">
-              {selectedField ? (
-                <FieldEditor
-                  field={selectedField}
-                  onUpdate={handleUpdateField}
-                  onClose={() => setSelectedFieldId(null)}
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center text-center px-8">
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Select a field to edit its properties
-                  </p>
-                </div>
-              )}
             </div>
           </>
         )}
 
         {viewMode === "preview" && (
-          <div className="flex-1 overflow-y-auto px-12 py-16">
-            <div className="mx-auto max-w-2xl">
+          <div className="flex-1 overflow-y-auto bg-muted/20 p-8">
+            <div className="mx-auto max-w-2xl bg-background rounded-lg shadow-sm border p-8">
               <FormRenderer config={formConfig} />
             </div>
           </div>
         )}
 
         {viewMode === "json" && (
-          <div className="flex-1 overflow-y-auto px-12 py-16">
+          <div className="flex-1 overflow-y-auto p-8">
             <div className="mx-auto max-w-4xl space-y-6">
-              <div className="rounded-sm border bg-muted/30 p-6">
-                <pre className="text-sm overflow-x-auto leading-relaxed">
+              <div className="rounded-lg border bg-muted/30 p-6">
+                <pre className="text-sm overflow-x-auto leading-relaxed font-mono">
                   {JSON.stringify(formConfig, null, 2)}
                 </pre>
               </div>
@@ -427,9 +362,9 @@ export function FormBuilder() {
                   navigator.clipboard.writeText(
                     JSON.stringify(formConfig, null, 2)
                   );
+                  toast.success("Copied to clipboard");
                 }}
-                variant="ghost"
-                className="font-normal"
+                variant="outline"
               >
                 Copy to Clipboard
               </Button>

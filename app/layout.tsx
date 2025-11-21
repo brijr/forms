@@ -15,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Form Builder",
-  description: "Build and customize forms with an intuitive drag-and-drop interface",
+  description:
+    "Build and customize forms with an intuitive drag-and-drop interface",
 };
 
 export default function RootLayout({
