@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import {
   PlusIcon,
   Trash2Icon,
@@ -26,66 +26,67 @@ import {
   SquareCheckIcon,
   ToggleRightIcon,
   SlidersHorizontalIcon,
-} from "lucide-react"
-import { toast } from "sonner"
-import type { FormConfig, FieldType } from "@/lib/form-config"
-import { createDefaultField, createEmptyForm } from "@/lib/form-config"
-import { downloadFormConfig, parseFormConfig } from "@/lib/form-utils"
-import { FormRenderer } from "./form-renderer"
-import { FieldEditor } from "./field-editor"
+} from "lucide-react";
+import { toast } from "sonner";
+import type { FormConfig, FieldType, FieldConfig } from "@/lib/form-config";
+import { createDefaultField, createEmptyForm } from "@/lib/form-config";
+import { downloadFormConfig, parseFormConfig } from "@/lib/form-utils";
+import { FormRenderer } from "./form-renderer";
+import { FieldEditor } from "./field-editor";
 
 export function FormBuilder() {
-  const [formConfig, setFormConfig] = useState<FormConfig>(createEmptyForm())
-  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null)
+  const [formConfig, setFormConfig] = useState<FormConfig>(createEmptyForm());
+  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"builder" | "preview" | "json">(
     "builder"
-  )
+  );
 
   const handleAddField = (type: FieldType) => {
-    const newField = createDefaultField(type, formConfig.fields.length)
+    const newField = createDefaultField(type, formConfig.fields.length);
     setFormConfig({
       ...formConfig,
       fields: [...formConfig.fields, newField],
-    })
-    setSelectedFieldId(newField.id)
+    });
+    setSelectedFieldId(newField.id);
 
     // Show toast notification
-    const fieldTypeLabel = type.charAt(0).toUpperCase() + type.slice(1).replace('-', ' ')
+    const fieldTypeLabel =
+      type.charAt(0).toUpperCase() + type.slice(1).replace("-", " ");
     toast.success(`${fieldTypeLabel} field added`, {
-      description: "Configure the field in the right panel"
-    })
-  }
+      description: "Configure the field in the right panel",
+    });
+  };
 
   const handleDeleteField = (fieldId: string) => {
     setFormConfig({
       ...formConfig,
       fields: formConfig.fields.filter((f) => f.id !== fieldId),
-    })
+    });
     if (selectedFieldId === fieldId) {
-      setSelectedFieldId(null)
+      setSelectedFieldId(null);
     }
-  }
+  };
 
   const handleMoveField = (fieldId: string, direction: "up" | "down") => {
-    const index = formConfig.fields.findIndex((f) => f.id === fieldId)
-    if (index === -1) return
+    const index = formConfig.fields.findIndex((f) => f.id === fieldId);
+    if (index === -1) return;
 
     if (direction === "up" && index > 0) {
-      const newFields = [...formConfig.fields]
-      ;[newFields[index - 1], newFields[index]] = [
+      const newFields = [...formConfig.fields];
+      [newFields[index - 1], newFields[index]] = [
         newFields[index],
         newFields[index - 1],
-      ]
-      setFormConfig({ ...formConfig, fields: newFields })
+      ];
+      setFormConfig({ ...formConfig, fields: newFields });
     } else if (direction === "down" && index < formConfig.fields.length - 1) {
-      const newFields = [...formConfig.fields]
-      ;[newFields[index], newFields[index + 1]] = [
+      const newFields = [...formConfig.fields];
+      [newFields[index], newFields[index + 1]] = [
         newFields[index + 1],
         newFields[index],
-      ]
-      setFormConfig({ ...formConfig, fields: newFields })
+      ];
+      setFormConfig({ ...formConfig, fields: newFields });
     }
-  }
+  };
 
   const handleUpdateField = (updatedField: FieldConfig) => {
     setFormConfig({
@@ -93,38 +94,38 @@ export function FormBuilder() {
       fields: formConfig.fields.map((f) =>
         f.id === updatedField.id ? updatedField : f
       ),
-    })
-  }
+    });
+  };
 
   const handleExport = () => {
-    downloadFormConfig(formConfig)
-  }
+    downloadFormConfig(formConfig);
+  };
 
   const handleImport = () => {
-    const input = document.createElement("input")
-    input.type = "file"
-    input.accept = ".json"
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
     input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0]
+      const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        const reader = new FileReader()
+        const reader = new FileReader();
         reader.onload = (event) => {
-          const jsonString = event.target?.result as string
-          const config = parseFormConfig(jsonString)
+          const jsonString = event.target?.result as string;
+          const config = parseFormConfig(jsonString);
           if (config) {
-            setFormConfig(config)
-            setSelectedFieldId(null)
+            setFormConfig(config);
+            setSelectedFieldId(null);
           } else {
-            alert("Invalid form configuration file")
+            alert("Invalid form configuration file");
           }
-        }
-        reader.readAsText(file)
+        };
+        reader.readAsText(file);
       }
-    }
-    input.click()
-  }
+    };
+    input.click();
+  };
 
-  const selectedField = formConfig.fields.find((f) => f.id === selectedFieldId)
+  const selectedField = formConfig.fields.find((f) => f.id === selectedFieldId);
 
   return (
     <div className="flex h-screen flex-col">
@@ -178,10 +179,20 @@ export function FormBuilder() {
             </div>
             <Separator orientation="vertical" className="h-6" />
             <div className="flex gap-2">
-              <Button variant="ghost" size="sm" onClick={handleImport} className="font-normal">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleImport}
+                className="font-normal"
+              >
                 Import
               </Button>
-              <Button variant="ghost" size="sm" onClick={handleExport} className="font-normal">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleExport}
+                className="font-normal"
+              >
                 Export
               </Button>
             </div>
@@ -198,17 +209,20 @@ export function FormBuilder() {
               <div className="space-y-8">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Add Field</h3>
+                    <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      Add Field
+                    </h3>
                     <p className="text-xs text-muted-foreground leading-relaxed">
                       Choose a field type to add to your form
                     </p>
                   </div>
-                  <Select onValueChange={(value) => handleAddField(value as FieldType)}>
+                  <Select
+                    onValueChange={(value) =>
+                      handleAddField(value as FieldType)
+                    }
+                  >
                     <SelectTrigger className="h-11 font-normal w-full">
-                      <div className="flex items-center gap-2">
-                        <PlusIcon className="h-4 w-4" />
-                        <SelectValue placeholder="Select field type" />
-                      </div>
+                      <SelectValue placeholder="Select field type" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="text">
@@ -307,10 +321,10 @@ export function FormBuilder() {
                             <div className="flex gap-0.5">
                               <Button
                                 variant="ghost"
-                                size="icon-xs"
+                                size="icon"
                                 onClick={(e) => {
-                                  e.stopPropagation()
-                                  handleMoveField(field.id, "up")
+                                  e.stopPropagation();
+                                  handleMoveField(field.id, "up");
                                 }}
                                 disabled={index === 0}
                                 className="h-7 w-7"
@@ -319,22 +333,24 @@ export function FormBuilder() {
                               </Button>
                               <Button
                                 variant="ghost"
-                                size="icon-xs"
+                                size="icon"
                                 onClick={(e) => {
-                                  e.stopPropagation()
-                                  handleMoveField(field.id, "down")
+                                  e.stopPropagation();
+                                  handleMoveField(field.id, "down");
                                 }}
-                                disabled={index === formConfig.fields.length - 1}
+                                disabled={
+                                  index === formConfig.fields.length - 1
+                                }
                                 className="h-7 w-7"
                               >
                                 <ChevronDownIcon className="h-3.5 w-3.5" />
                               </Button>
                               <Button
                                 variant="ghost"
-                                size="icon-xs"
+                                size="icon"
                                 onClick={(e) => {
-                                  e.stopPropagation()
-                                  handleDeleteField(field.id)
+                                  e.stopPropagation();
+                                  handleDeleteField(field.id);
                                 }}
                                 className="h-7 w-7 text-muted-foreground hover:text-destructive"
                               >
@@ -358,9 +374,7 @@ export function FormBuilder() {
                     <div className="text-center space-y-4">
                       <PlusIcon className="mx-auto h-10 w-10 text-muted-foreground/50" />
                       <div className="space-y-2">
-                        <h3 className="text-base font-medium">
-                          No fields yet
-                        </h3>
+                        <h3 className="text-base font-medium">No fields yet</h3>
                         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
                           Add a field from the left sidebar to get started
                         </p>
@@ -412,7 +426,7 @@ export function FormBuilder() {
                 onClick={() => {
                   navigator.clipboard.writeText(
                     JSON.stringify(formConfig, null, 2)
-                  )
+                  );
                 }}
                 variant="ghost"
                 className="font-normal"
@@ -424,5 +438,5 @@ export function FormBuilder() {
         )}
       </div>
     </div>
-  )
+  );
 }
