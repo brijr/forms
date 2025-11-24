@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,6 +13,12 @@ interface InlineEditProps {
   multiline?: boolean;
 }
 
+const INPUT_BASE_CLASSES =
+  "border-none shadow-none px-1 -mx-1 focus-visible:ring-0 bg-transparent py-0 min-h-[1.5em] w-full leading-[inherit] text-base md:text-base";
+
+const DISPLAY_BASE_CLASSES =
+  "cursor-text hover:bg-muted/50 rounded px-1 -mx-1 transition-colors min-h-[1.5em] leading-[inherit] text-base";
+
 export function InlineEdit({
   value,
   onSave,
@@ -20,78 +26,85 @@ export function InlineEdit({
   className,
   multiline = false,
 }: InlineEditProps) {
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [tempValue, setTempValue] = React.useState(value);
-  const inputRef = React.useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempValue, setTempValue] = useState(value);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setTempValue(value);
   }, [value]);
 
-  React.useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
+  useEffect(() => {
+    const element = multiline ? textareaRef.current : inputRef.current;
+    if (isEditing && element) {
+      element.focus();
+      element.select();
     }
-  }, [isEditing]);
+  }, [isEditing, multiline]);
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     onSave(tempValue);
     setIsEditing(false);
-  };
+  }, [tempValue, onSave]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSave();
-    }
-    if (e.key === "Escape") {
-      setTempValue(value);
-      setIsEditing(false);
-    }
-  };
+  const handleCancel = useCallback(() => {
+    setTempValue(value);
+    setIsEditing(false);
+  }, [value]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      if (e.key === "Enter" && !e.shiftKey && !multiline) {
+        e.preventDefault();
+        handleSave();
+      }
+      if (e.key === "Escape") {
+        e.preventDefault();
+        handleCancel();
+      }
+    },
+    [multiline, handleSave, handleCancel]
+  );
+
+  const handleStartEdit = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEditing(true);
+  }, []);
+
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setTempValue(e.target.value);
+    },
+    []
+  );
 
   if (isEditing) {
-    if (multiline) {
-      return (
-        <Textarea
-          ref={inputRef as React.RefObject<HTMLTextAreaElement>}
-          value={tempValue}
-          onChange={(e) => setTempValue(e.target.value)}
-          onBlur={handleSave}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          className={cn(
-            "border-none shadow-none px-1 -mx-1 focus-visible:ring-0 bg-transparent resize-none min-h-[1.5em] py-0 w-full leading-[inherit] text-base md:text-base",
-            className
-          )}
-          rows={2}
-        />
-      );
-    }
-    return (
+    const commonProps = {
+      value: tempValue,
+      onChange: handleChange,
+      onBlur: handleSave,
+      onKeyDown: handleKeyDown,
+      placeholder,
+      className: cn(INPUT_BASE_CLASSES, multiline && "resize-none", className),
+    };
+
+    return multiline ? (
+      <Textarea ref={textareaRef} {...commonProps} rows={2} />
+    ) : (
       <Input
-        ref={inputRef as React.RefObject<HTMLInputElement>}
-        value={tempValue}
-        onChange={(e) => setTempValue(e.target.value)}
-        onBlur={handleSave}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        className={cn(
-          "border-none shadow-none px-1 -mx-1 focus-visible:ring-0 h-auto bg-transparent py-0 min-h-[1.5em] w-full leading-[inherit] text-base md:text-base",
-          className
-        )}
+        ref={inputRef}
+        {...commonProps}
+        className={cn(commonProps.className, "h-auto")}
       />
     );
   }
 
   return (
     <div
-      onClick={(e) => {
-        e.stopPropagation();
-        setIsEditing(true);
-      }}
+      onClick={handleStartEdit}
       className={cn(
-        "cursor-text hover:bg-muted/50 rounded px-1 -mx-1 transition-colors min-h-[1.5em] leading-[inherit] text-base",
+        DISPLAY_BASE_CLASSES,
         !value && "text-muted-foreground",
         className
       )}

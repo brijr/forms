@@ -28,7 +28,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  PlusIcon,
   TypeIcon,
   ArrowUpRightIcon,
   MailIcon,
@@ -304,12 +303,11 @@ export function FormBuilder() {
                         <Button
                           key={item.type}
                           variant="outline"
-                          size="sm"
-                          className="flex flex-col items-center justify-center h-16 gap-1 hover:border-primary hover:text-primary transition-all"
+                          className="flex flex-col items-center justify-center h-16 w-full gap-1.5 whitespace-normal px-2 py-3 text-xs hover:border-primary hover:text-primary transition-all [&>svg]:shrink-0"
                           onClick={() => handleAddField(item.type)}
                         >
                           <item.icon className="h-5 w-5" />
-                          <span className="text-[10px] font-medium">
+                          <span className="text-[10px] font-medium leading-tight text-center">
                             {item.label}
                           </span>
                         </Button>
@@ -345,18 +343,10 @@ export function FormBuilder() {
                   />
                 </div>
                 {formConfig.fields.length === 0 ? (
-                  <div className="flex h-[500px] items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/20 bg-background/50">
-                    <div className="text-center space-y-4">
-                      <div className="mx-auto h-12 w-12 rounded-full bg-muted flex items-center justify-center">
-                        <PlusIcon className="h-6 w-6 text-muted-foreground" />
-                      </div>
-                      <div className="space-y-1">
-                        <h3 className="font-medium">Start Building</h3>
-                        <p className="text-sm text-muted-foreground max-w-xs mx-auto">
-                          Select a field from the toolbox to add it to your form
-                        </p>
-                      </div>
-                    </div>
+                  <div className="flex items-center justify-center p-8 border rounded">
+                    <p className="text-sm text-muted-foreground">
+                      Add a field to begin
+                    </p>
                   </div>
                 ) : (
                   <DndContext

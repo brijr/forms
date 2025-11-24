@@ -9,6 +9,7 @@ import { InlineEdit } from "@/components/ui/inline-edit";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { CSS } from "@dnd-kit/utilities";
 
 import { useSortable } from "@dnd-kit/sortable";
@@ -125,23 +126,14 @@ export function SortableField({
   }
 
   return (
-    <div>
-      <div className="flex items-start gap-2">
-        {/* Drag Handle */}
-        <div
-          {...attributes}
-          {...listeners}
-          className="p-0.5 -ml-8 cursor-grab active:cursor-grabbing text-muted-foreground/30 hover:text-foreground transition-colors"
-        >
-          <GripVertical className="h-5 w-5" />
-        </div>
-
+    <section>
+      <div className="grid grid-cols-[1fr_auto] items-start gap-3">
         {/* Field Box */}
         <div
           ref={setNodeRef}
           style={style}
           onClick={() => onSelect()}
-          className="relative group flex items-start gap-3 pr-4 pb-4 flex-1"
+          className="relative group flex items-start gap-3 p-3 flex-1 border bg-muted/30 rounded h-full"
         >
           {/* Content */}
           <div className="flex-1 space-y-3">
@@ -160,6 +152,7 @@ export function SortableField({
                 onRemoveOption={handleRemoveOption}
                 onLabelUpdate={handleLabelUpdate}
               />
+
               {/* Inline Placeholder Edit */}
               {supportsPlaceholder(field.type) && (
                 <div
@@ -211,18 +204,30 @@ export function SortableField({
           </div>
         </div>
 
-        {/* Actions */}
-        <FieldActions
-          onSettingsClick={(e) => {
-            e.stopPropagation();
-            setIsEditing(true);
-          }}
-          onDuplicate={onDuplicate}
-          onDelete={onDelete}
-        />
+        {/* Actions Column */}
+        <div className="flex flex-col gap-0.5 p-1 border bg-muted/30 rounded">
+          <Button
+            variant="ghost"
+            size="icon"
+            {...attributes}
+            {...listeners}
+            className="cursor-grab active:cursor-grabbing"
+            title="Drag to reorder"
+          >
+            <GripVertical />
+          </Button>
+
+          <FieldActions
+            onSettingsClick={(e) => {
+              e.stopPropagation();
+              setIsEditing(true);
+            }}
+            onDuplicate={onDuplicate}
+            onDelete={onDelete}
+          />
+        </div>
       </div>
-      {/* Separator */}
-      <Separator className="mt-4" />
+
       {/* Validation Settings Dialog */}
       <FieldEditor
         field={field}
@@ -230,6 +235,6 @@ export function SortableField({
         onClose={() => setIsEditing(false)}
         open={isEditing}
       />
-    </div>
+    </section>
   );
 }
