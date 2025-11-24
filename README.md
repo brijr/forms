@@ -72,23 +72,23 @@ This command creates JSON bundles in `public/r/` for use by the shadcn CLI.
 
 ### Installing Components
 
-#### Locally
+Install both components with one command:
 
 ```bash
-# Install inline-edit
-npx shadcn@latest add http://localhost:3000/r/inline-edit.json
-
-# Install form-builder
-npx shadcn@latest add http://localhost:3000/r/form-builder.json
+npx shadcn@latest add https://forms.bridger.to/r/inline-edit.json https://forms.bridger.to/r/form-builder.json
 ```
 
-#### From the Website
-
-Once deployed, components can be installed from:
+Or install them separately:
 
 ```bash
 npx shadcn@latest add https://forms.bridger.to/r/inline-edit.json
 npx shadcn@latest add https://forms.bridger.to/r/form-builder.json
+```
+
+#### Local Development
+
+```bash
+npx shadcn@latest add http://localhost:3000/r/inline-edit.json http://localhost:3000/r/form-builder.json
 ```
 
 **Note:** Components will be installed to `components/forms/` directory. The `inline-edit` component will be installed to `components/ui/inline-edit/`.
