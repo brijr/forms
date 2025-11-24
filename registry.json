@@ -60,62 +60,62 @@
       "files": [
         {
           "path": "registry/form-builder/lib/form-config.ts",
-          "type": "registry:lib",
+          "type": "registry:file",
           "target": "components/form-builder/lib/form-config.ts"
         },
         {
           "path": "registry/form-builder/lib/form-utils.ts",
-          "type": "registry:lib",
+          "type": "registry:file",
           "target": "components/form-builder/lib/form-utils.ts"
         },
         {
           "path": "registry/form-builder/use-form-builder.ts",
-          "type": "registry:hook",
+          "type": "registry:file",
           "target": "components/form-builder/use-form-builder.ts"
         },
         {
           "path": "registry/form-builder/field-editor.tsx",
-          "type": "registry:component",
+          "type": "registry:file",
           "target": "components/form-builder/field-editor.tsx"
         },
         {
           "path": "registry/form-builder/field-preview.tsx",
-          "type": "registry:component",
+          "type": "registry:file",
           "target": "components/form-builder/field-preview.tsx"
         },
         {
           "path": "registry/form-builder/field-toolbox.tsx",
-          "type": "registry:component",
+          "type": "registry:file",
           "target": "components/form-builder/field-toolbox.tsx"
         },
         {
           "path": "registry/form-builder/floating-controls.tsx",
-          "type": "registry:component",
+          "type": "registry:file",
           "target": "components/form-builder/floating-controls.tsx"
         },
         {
           "path": "registry/form-builder/option-list.tsx",
-          "type": "registry:component",
+          "type": "registry:file",
           "target": "components/form-builder/option-list.tsx"
         },
         {
           "path": "registry/form-builder/sortable-field.tsx",
-          "type": "registry:component",
+          "type": "registry:file",
           "target": "components/form-builder/sortable-field.tsx"
         },
         {
           "path": "registry/form-builder/form-builder.tsx",
-          "type": "registry:component",
+          "type": "registry:file",
           "target": "components/form-builder/form-builder.tsx"
         },
         {
           "path": "registry/form-builder/form-renderer.tsx",
-          "type": "registry:component",
+          "type": "registry:file",
           "target": "components/form-builder/form-renderer.tsx"
         },
         {
           "path": "registry/form-builder/index.ts",
-          "type": "registry:component",
+          "type": "registry:file",
           "target": "components/form-builder/index.ts"
         }
       ]

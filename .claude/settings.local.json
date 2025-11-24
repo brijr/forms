@@ -4,7 +4,9 @@
       "Bash(pnpx shadcn@latest add:*)",
       "Bash(pnpm install:*)",
       "Bash(pnpm run lint)",
-      "Bash(pnpm run dev)"
+      "Bash(pnpm run dev)",
+      "WebFetch(domain:ui.shadcn.com)",
+      "Bash(pnpm run registry:build:*)"
     ],
     "deny": [],
     "ask": []
