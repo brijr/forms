@@ -171,7 +171,11 @@ export function FieldPreview({
     case "switch":
       return (
         <div className="flex items-center justify-between">
-          <span className="text-muted-foreground">(Switch Label above)</span>
+          <InlineEdit
+            value={field.label}
+            onSave={onLabelUpdate}
+            placeholder="Switch label"
+          />
           <Switch disabled id={field.id} />
         </div>
       );

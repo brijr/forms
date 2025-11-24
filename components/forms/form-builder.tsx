@@ -69,7 +69,7 @@ export function FormBuilder() {
 
           <SidebarInset className="flex-1 overflow-y-auto bg-muted/20 p-4 md:p-8 w-full">
             {viewMode === "builder" && (
-              <div className="mx-auto w-full max-w-4xl min-h-full">
+              <div className="mx-auto w-full max-w-2xl min-h-full">
                 {/* Form Header */}
                 <div className="mb-8">
                   <input
@@ -131,13 +131,13 @@ export function FormBuilder() {
             )}
 
             {viewMode === "preview" && (
-              <div className="mx-auto w-full max-w-2xl ">
+              <div className="mx-auto w-full max-w-2xl">
                 <FormRenderer config={formConfig} />
               </div>
             )}
 
             {viewMode === "json" && (
-              <div className="mx-auto w-full max-w-4xl space-y-6">
+              <div className="mx-auto w-full max-w-2xl space-y-6">
                 <div className="rounded-lg border bg-muted/30 p-6">
                   <pre className="text-sm overflow-x-auto leading-relaxed font-mono">
                     {JSON.stringify(formConfig, null, 2)}
