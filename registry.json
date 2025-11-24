@@ -1,0 +1,102 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "forms",
+  "homepage": "https://github.com/brijr/forms",
+  "items": [
+    {
+      "name": "inline-edit",
+      "type": "registry:component",
+      "title": "Inline Edit",
+      "description": "A click-to-edit component for inline text editing with support for single-line and multiline inputs.",
+      "registryDependencies": [
+        "input",
+        "textarea"
+      ],
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/inline-edit/inline-edit.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "form-builder",
+      "type": "registry:block",
+      "title": "Form Builder",
+      "description": "A complete form builder component with drag-and-drop field management, validation, and form rendering capabilities.",
+      "registryDependencies": [
+        "inline-edit",
+        "button",
+        "input",
+        "textarea",
+        "select",
+        "checkbox",
+        "radio-group",
+        "switch",
+        "slider",
+        "field",
+        "dialog",
+        "tooltip",
+        "label"
+      ],
+      "dependencies": [
+        "@dnd-kit/core@^6.3.1",
+        "@dnd-kit/sortable@^10.0.0",
+        "@dnd-kit/utilities@^3.2.2",
+        "@tanstack/react-form@^1.25.0",
+        "@tanstack/zod-form-adapter@^0.42.1",
+        "zod@^4.1.12",
+        "sonner@^2.0.7",
+        "lucide-react@^0.554.0",
+        "clsx",
+        "tailwind-merge"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/form-builder/lib/form-config.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/new-york/form-builder/lib/form-utils.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/new-york/form-builder/components/field-actions.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/new-york/form-builder/components/field-editor.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/new-york/form-builder/components/field-header.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/new-york/form-builder/components/field-preview.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/new-york/form-builder/components/form-builder.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/new-york/form-builder/components/form-renderer.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/new-york/form-builder/components/option-list.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/new-york/form-builder/components/sortable-field.tsx",
+          "type": "registry:component"
+        }
+      ]
+    }
+  ]
+}
