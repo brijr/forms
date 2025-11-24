@@ -45,6 +45,7 @@ import {
   Download,
 } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import type { FormConfig, FieldType, FieldConfig } from "@/lib/form-config";
 import { createDefaultField, createEmptyForm } from "@/lib/form-config";
 import { downloadFormConfig, parseFormConfig } from "@/lib/form-utils";
@@ -210,14 +211,14 @@ export function FormBuilder() {
                 <SidebarTrigger />
               </div>
             )}
-            <div className="flex bg-background/95 backdrop-blur-sm border rounded-lg p-1">
+            <div className="flex bg-background/95 backdrop-blur-sm border rounded-lg p-1 gap-1">
               {(["builder", "preview", "json"] as const).map((mode) => (
                 <Button
                   key={mode}
                   variant={viewMode === mode ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setViewMode(mode)}
-                  className="h-8 capitalize"
+                  className={cn("capitalize", mode === "json" && "uppercase")}
                 >
                   {mode}
                 </Button>
