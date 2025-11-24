@@ -357,36 +357,57 @@ export function SortableField({
   }
 
   return (
-    <div className="flex items-start gap-2">
-      {/* Drag Handle */}
-      <div
-        {...attributes}
-        {...listeners}
-        className="p-1 cursor-grab active:cursor-grabbing text-muted-foreground/30 hover:text-foreground transition-colors"
-      >
-        <GripVertical className="h-5 w-5" />
-      </div>
+    <div>
+      <div className="flex items-start gap-2">
+        {/* Drag Handle */}
+        <div
+          {...attributes}
+          {...listeners}
+          className="p-1 cursor-grab active:cursor-grabbing text-muted-foreground/30 hover:text-foreground transition-colors"
+        >
+          <GripVertical className="h-5 w-5" />
+        </div>
 
-      {/* Field Box */}
-      <div
-        ref={setNodeRef}
-        style={style}
-        onClick={() => onSelect()}
-        className={cn(
-          "relative group flex items-start gap-3 p-4 border rounded-lg bg-background transition-all hover:shadow-sm border-border flex-1"
-        )}
-      >
-        {/* Content */}
-        <div className="flex-1 space-y-3">
-          {field.type !== "checkbox" && field.type !== "switch" && (
-            <div className="space-y-1">
-              <div className="flex items-center justify-between gap-2">
+        {/* Field Box */}
+        <div
+          ref={setNodeRef}
+          style={style}
+          onClick={() => onSelect()}
+          className={cn(
+            "relative group flex items-start gap-3 px-4 pb-4 flex-1"
+          )}
+        >
+          {/* Content */}
+          <div className="flex-1 space-y-3">
+            {field.type !== "checkbox" && field.type !== "switch" && (
+              <div className="space-y-1">
+                <div className="flex items-center justify-between gap-2">
+                  <InlineEdit
+                    value={field.label}
+                    onSave={(val) => onUpdate({ ...field, label: val })}
+                    className="font-medium text-base text-foreground"
+                    placeholder="Field Label"
+                  />
+                  {/* Field Type Icon */}
+                  <div
+                    className="flex items-center gap-2 text-muted-foreground/60"
+                    title={field.type}
+                  >
+                    <FieldTypeIcon className="h-4 w-4" />
+                    <span className="text-[10px] uppercase">{field.type}</span>
+                  </div>
+                </div>
+
                 <InlineEdit
-                  value={field.label}
-                  onSave={(val) => onUpdate({ ...field, label: val })}
-                  className="font-medium text-base text-foreground"
-                  placeholder="Field Label"
+                  value={field.description || ""}
+                  onSave={(val) => onUpdate({ ...field, description: val })}
+                  className="text-muted-foreground"
+                  placeholder="Description"
                 />
+              </div>
+            )}
+            {(field.type === "checkbox" || field.type === "switch") && (
+              <div className="flex items-center justify-end gap-2">
                 {/* Field Type Icon */}
                 <div
                   className="flex items-center gap-2 text-muted-foreground/60"
@@ -396,138 +417,121 @@ export function SortableField({
                   <span className="text-[10px] uppercase">{field.type}</span>
                 </div>
               </div>
+            )}
 
-              <InlineEdit
-                value={field.description || ""}
-                onSave={(val) => onUpdate({ ...field, description: val })}
-                className="text-muted-foreground"
-                placeholder="Description"
-              />
+            {/* Render Preview */}
+            <div className="relative">
+              {" "}
+              {/* Removed pointer-events-none to allow interaction with inline edits */}
+              {renderFieldPreview()}
+              {/* Inline Placeholder Edit (only for inputs) */}
+              {(field.type === "text" ||
+                field.type === "email" ||
+                field.type === "phone" ||
+                field.type === "number") && (
+                <div className="absolute left-3 top-0 h-9 flex items-center pointer-events-none">
+                  <div className="pointer-events-auto">
+                    <InlineEdit
+                      value={field.placeholder || ""}
+                      onSave={(val) => onUpdate({ ...field, placeholder: val })}
+                      className="text-muted-foreground font-normal"
+                      placeholder="Placeholder"
+                    />
+                  </div>
+                </div>
+              )}
+              {field.type === "textarea" && (
+                <div className="absolute left-3 top-2 pointer-events-none">
+                  <div className="pointer-events-auto">
+                    <InlineEdit
+                      value={field.placeholder || ""}
+                      onSave={(val) => onUpdate({ ...field, placeholder: val })}
+                      className="text-muted-foreground font-normal"
+                      placeholder="Placeholder"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-          {(field.type === "checkbox" || field.type === "switch") && (
-            <div className="flex items-center justify-end gap-2">
-              {/* Field Type Icon */}
-              <div
-                className="flex items-center gap-2 text-muted-foreground/60"
-                title={field.type}
-              >
-                <FieldTypeIcon className="h-4 w-4" />
-                <span className="text-[10px] uppercase">{field.type}</span>
-              </div>
-            </div>
-          )}
 
-          {/* Render Preview */}
-          <div className="relative">
-            {" "}
-            {/* Removed pointer-events-none to allow interaction with inline edits */}
-            {renderFieldPreview()}
-            {/* Inline Placeholder Edit (only for inputs) */}
+            {/* Required Checkbox - Below Placeholder */}
             {(field.type === "text" ||
               field.type === "email" ||
               field.type === "phone" ||
-              field.type === "number") && (
-              <div className="absolute left-3 top-0 h-9 flex items-center pointer-events-none">
-                <div className="pointer-events-auto">
-                  <InlineEdit
-                    value={field.placeholder || ""}
-                    onSave={(val) => onUpdate({ ...field, placeholder: val })}
-                    className="text-muted-foreground font-normal"
-                    placeholder="Placeholder"
-                  />
-                </div>
-              </div>
-            )}
-            {field.type === "textarea" && (
-              <div className="absolute left-3 top-2 pointer-events-none">
-                <div className="pointer-events-auto">
-                  <InlineEdit
-                    value={field.placeholder || ""}
-                    onSave={(val) => onUpdate({ ...field, placeholder: val })}
-                    className="text-muted-foreground font-normal"
-                    placeholder="Placeholder"
-                  />
-                </div>
+              field.type === "number" ||
+              field.type === "textarea") && (
+              <div
+                className="flex items-center gap-1.5"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Checkbox
+                  id={`${field.id}-required`}
+                  checked={field.validation?.required ?? false}
+                  onCheckedChange={(checked) =>
+                    onUpdate({
+                      ...field,
+                      validation: {
+                        ...field.validation,
+                        required: checked === true,
+                      },
+                    })
+                  }
+                />
+                <Label
+                  htmlFor={`${field.id}-required`}
+                  className="text-[10px] font-normal cursor-pointer"
+                >
+                  Required
+                </Label>
               </div>
             )}
           </div>
-
-          {/* Required Checkbox - Below Placeholder */}
-          {(field.type === "text" ||
-            field.type === "email" ||
-            field.type === "phone" ||
-            field.type === "number" ||
-            field.type === "textarea") && (
-            <div
-              className="flex items-center gap-1.5"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Checkbox
-                id={`${field.id}-required`}
-                checked={field.validation?.required ?? false}
-                onCheckedChange={(checked) =>
-                  onUpdate({
-                    ...field,
-                    validation: {
-                      ...field.validation,
-                      required: checked === true,
-                    },
-                  })
-                }
-              />
-              <Label
-                htmlFor={`${field.id}-required`}
-                className="text-[10px] font-normal cursor-pointer"
-              >
-                Required
-              </Label>
-            </div>
-          )}
         </div>
-      </div>
 
-      {/* Actions */}
-      <div className="flex flex-col gap-1">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-muted-foreground hover:text-primary"
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsEditing(true);
-          }}
-          title="Validation Settings"
-        >
-          <Settings2 className="h-4 w-4" />
-        </Button>
-        {onDuplicate && (
+        {/* Actions */}
+        <div className="flex flex-col gap-1">
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-foreground"
+            className="h-8 w-8 text-muted-foreground hover:text-primary"
             onClick={(e) => {
               e.stopPropagation();
-              onDuplicate(e);
+              setIsEditing(true);
             }}
-            title="Duplicate"
+            title="Validation Settings"
           >
-            <Copy className="h-4 w-4" />
+            <Settings2 className="h-4 w-4" />
           </Button>
-        )}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-muted-foreground hover:text-destructive"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete(e);
-          }}
-          title="Delete"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+          {onDuplicate && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDuplicate(e);
+              }}
+              title="Duplicate"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground hover:text-destructive"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(e);
+            }}
+            title="Delete"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
+      {/* Separator */}
+      <Separator className="mt-4" />
     </div>
   );
 }

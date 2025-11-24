@@ -193,25 +193,7 @@ export function FormBuilder() {
     <div className="flex h-screen flex-col">
       {/* Header */}
       <div className="border-b px-6 py-4 bg-background">
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4">
-          <div className="flex-1 space-y-0.5">
-            <Input
-              value={formConfig.title}
-              onChange={(e) =>
-                setFormConfig({ ...formConfig, title: e.target.value })
-              }
-              className="text-base border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
-              placeholder="Form Title"
-            />
-            <Input
-              value={formConfig.description || ""}
-              onChange={(e) =>
-                setFormConfig({ ...formConfig, description: e.target.value })
-              }
-              className="text-base text-muted-foreground border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
-              placeholder="Form description (optional)"
-            />
-          </div>
+        <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 w-full">
           <div className="flex items-center gap-3">
             <div className="flex bg-muted/50 p-1 rounded-md">
               <Button
@@ -239,25 +221,24 @@ export function FormBuilder() {
                 JSON
               </Button>
             </div>
-            <Separator orientation="vertical" className="h-6" />
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleImport}
-                className="h-9"
-              >
-                Import
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExport}
-                className="h-9"
-              >
-                Export
-              </Button>
-            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleImport}
+              className="h-9"
+            >
+              Import
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExport}
+              className="h-9"
+            >
+              Export
+            </Button>
           </div>
         </div>
       </div>
@@ -299,6 +280,24 @@ export function FormBuilder() {
             {/* Center - Canvas */}
             <div className="flex-1 overflow-y-auto bg-muted/20 p-8">
               <div className="mx-auto max-w-3xl min-h-full">
+                <div className="flex-1 space-y-0.5 mb-6">
+                  <Input
+                    value={formConfig.title}
+                    onChange={(e) =>
+                      setFormConfig({ ...formConfig, title: e.target.value })
+                    }
+                    className="text-base border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
+                    placeholder="Form Title"
+                  />
+                  <Input
+                    value={formConfig.description || ""}
+                    onChange={(e) =>
+                      setFormConfig({ ...formConfig, description: e.target.value })
+                    }
+                    className="text-base text-muted-foreground border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
+                    placeholder="Form description (optional)"
+                  />
+                </div>
                 {formConfig.fields.length === 0 ? (
                   <div className="flex h-[500px] items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/20 bg-background/50">
                     <div className="text-center space-y-4">
@@ -347,17 +346,7 @@ export function FormBuilder() {
         {viewMode === "preview" && (
           <div className="flex-1 overflow-y-auto bg-muted/20 p-8">
             <div className="mx-auto max-w-2xl">
-              <FormRenderer
-                config={formConfig}
-                onFieldUpdate={(updatedField) => {
-                  setFormConfig({
-                    ...formConfig,
-                    fields: formConfig.fields.map((f) =>
-                      f.id === updatedField.id ? updatedField : f
-                    ),
-                  });
-                }}
-              />
+              <FormRenderer config={formConfig} />
             </div>
           </div>
         )}
