@@ -61,9 +61,9 @@ export function FieldEditor({ field, onUpdate, onClose, open }: FieldEditorProps
           <DialogTitle>Validation Settings</DialogTitle>
         </DialogHeader>
 
-      <FieldGroup className="space-y-4 pt-2">
+      <FieldGroup className="space-y-3">
         {supportsLength && (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <Field>
               <FieldLabel htmlFor="field-minlength" className="text-base">Min Length</FieldLabel>
               <Input
@@ -119,7 +119,7 @@ export function FieldEditor({ field, onUpdate, onClose, open }: FieldEditorProps
         )}
 
         {supportsMinMax && (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <Field>
               <FieldLabel htmlFor="val-min" className="text-base">Min Value</FieldLabel>
               <Input
