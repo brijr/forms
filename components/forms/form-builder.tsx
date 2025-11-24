@@ -2,9 +2,6 @@
 
 import { useState } from "react";
 
-import Image from "next/image";
-import Logo from "@/public/logo.svg";
-
 import {
   DndContext,
   closestCenter,
@@ -29,7 +26,6 @@ import {
 } from "@/components/ui/tooltip";
 import {
   TypeIcon,
-  ArrowUpRightIcon,
   MailIcon,
   PhoneIcon,
   HashIcon,
@@ -200,93 +196,60 @@ export function FormBuilder() {
   };
 
   return (
-    <div className="flex h-screen flex-col">
-      {/* Header */}
-      <div className="border-b px-6 py-4 bg-background">
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 w-full">
-          <div className="flex items-center gap-3">
-            <Image
-              src={Logo}
-              alt="Logo"
-              width={16}
-              className="invert dark:invert-0"
-            />
-            <h2 className="text-sm font-medium grid">
-              <span>brijr/forms</span>
-              <a
-                href="https://github.com/brijr/forms"
-                target="_blank"
-                className="text-muted-foreground hover:text-foreground text-sm flex items-center gap-0.5"
-              >
-                Github <ArrowUpRightIcon size={14} />
-              </a>
-            </h2>
+    <div className="flex h-full flex-col">
+      {/* Main Content */}
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Floating Controls */}
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3">
+          <div className="flex bg-background/95 backdrop-blur-sm rounded-lg">
+            <Button
+              variant={viewMode === "builder" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("builder")}
+              className="h-8"
+            >
+              Builder
+            </Button>
+            <Button
+              variant={viewMode === "preview" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("preview")}
+              className="h-8"
+            >
+              Preview
+            </Button>
+            <Button
+              variant={viewMode === "json" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("json")}
+              className="h-8"
+            >
+              JSON
+            </Button>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex bg-muted/50 p-1 rounded-md">
-              <Button
-                variant={viewMode === "builder" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("builder")}
-                className="h-8"
-              >
-                Builder
-              </Button>
-              <Button
-                variant={viewMode === "preview" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("preview")}
-                className="h-8"
-              >
-                Preview
-              </Button>
-              <Button
-                variant={viewMode === "json" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("json")}
-                className="h-8"
-              >
-                JSON
-              </Button>
-            </div>
-            <div className="flex gap-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={handleImport}
-                    className="h-9 w-9"
-                  >
-                    <Upload className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Import</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={handleExport}
-                    className="h-9 w-9"
-                  >
-                    <Download className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Export</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
+          <div className="flex gap-2 bg-background/95 backdrop-blur-sm border rounded-lg p-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" onClick={handleImport}>
+                  <Upload />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Import</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" onClick={handleExport}>
+                  <Download />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Export</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex flex-1 overflow-hidden">
         {viewMode === "builder" && (
           <>
             {/* Left Sidebar - Toolbox */}
