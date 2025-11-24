@@ -17,7 +17,7 @@
     "tailwind-merge"
   ],
   "registryDependencies": [
-    "inline-edit",
+    "https://forms.bridger.to/r/inline-edit.json",
     "button",
     "input",
     "textarea",

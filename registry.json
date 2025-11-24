@@ -29,7 +29,7 @@
       "title": "Form Builder",
       "description": "A complete form builder component with drag-and-drop field management, validation, and form rendering capabilities.",
       "registryDependencies": [
-        "inline-edit",
+        "https://forms.bridger.to/r/inline-edit.json",
         "button",
         "input",
         "textarea",

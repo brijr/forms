@@ -2,7 +2,7 @@ import { CopyCommand } from "./copy-command";
 import { Button } from "./ui/button";
 
 const INSTALL_COMMAND =
-  "pnpx shadcn@latest add https://forms.bridger.to/r/inline-edit.json https://forms.bridger.to/r/form-builder.json";
+  "pnpx shadcn@latest add https://forms.bridger.to/r/form-builder.json";
 const GITHUB_URL = "https://github.com/brijr/forms";
 
 export function SiteNav() {

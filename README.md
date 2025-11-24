@@ -7,8 +7,10 @@ A powerful form builder built with Next.js, React, and shadcn/ui. This project f
 ## Quick Install
 
 ```bash
-npx shadcn@latest add https://forms.bridger.to/r/inline-edit.json https://forms.bridger.to/r/form-builder.json
+npx shadcn@latest add https://forms.bridger.to/r/form-builder.json
 ```
+
+This automatically installs all dependencies including the `inline-edit` component.
 
 ---
 
@@ -80,23 +82,22 @@ This command creates JSON bundles in `public/r/` for use by the shadcn CLI.
 
 ### Installing Components
 
-Install both components with one command:
+Install the form builder (includes all dependencies):
 
 ```bash
-npx shadcn@latest add https://forms.bridger.to/r/inline-edit.json https://forms.bridger.to/r/form-builder.json
+npx shadcn@latest add https://forms.bridger.to/r/form-builder.json
 ```
 
-Or install them separately:
+Or install just the inline-edit component:
 
 ```bash
 npx shadcn@latest add https://forms.bridger.to/r/inline-edit.json
-npx shadcn@latest add https://forms.bridger.to/r/form-builder.json
 ```
 
 #### Local Development
 
 ```bash
-npx shadcn@latest add http://localhost:3000/r/inline-edit.json http://localhost:3000/r/form-builder.json
+npx shadcn@latest add http://localhost:3000/r/form-builder.json
 ```
 
 **Note:** Components will be installed to `components/forms/` directory. The `inline-edit` component will be installed to `components/ui/inline-edit/`.
