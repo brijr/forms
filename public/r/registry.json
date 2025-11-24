@@ -57,47 +57,50 @@
       ],
       "files": [
         {
-          "path": "registry/new-york/form-builder/lib/form-config.ts",
+          "path": "registry/new-york/forms/lib/form-config.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/new-york/form-builder/lib/form-utils.ts",
+          "path": "registry/new-york/forms/lib/form-utils.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/new-york/form-builder/components/field-actions.tsx",
+          "path": "registry/new-york/forms/components/field-actions.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/components/field-editor.tsx",
+          "path": "registry/new-york/forms/components/field-editor.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/components/field-header.tsx",
+          "path": "registry/new-york/forms/components/field-header.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/components/field-preview.tsx",
+          "path": "registry/new-york/forms/components/field-preview.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/components/form-builder.tsx",
+          "path": "registry/new-york/forms/form-builder.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/components/form-renderer.tsx",
+          "path": "registry/new-york/forms/form-renderer.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/components/option-list.tsx",
+          "path": "registry/new-york/forms/components/option-list.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/components/sortable-field.tsx",
+          "path": "registry/new-york/forms/components/sortable-field.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/new-york/forms/index.ts",
           "type": "registry:component"
         }
       ]
     }
   ]
 }
-

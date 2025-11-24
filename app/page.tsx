@@ -1,5 +1,5 @@
-import { FormBuilder } from "@/components/form-builder/form-builder"
+import { FormBuilder } from "@/components/forms/form-builder";
 
 export default function Home() {
-  return <FormBuilder />
+  return <FormBuilder />;
 }

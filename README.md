@@ -91,6 +91,74 @@ npx shadcn@latest add https://forms.bridger.to/r/inline-edit.json
 npx shadcn@latest add https://forms.bridger.to/r/form-builder.json
 ```
 
+**Note:** Components will be installed to `components/forms/` directory. The `inline-edit` component will be installed to `components/ui/inline-edit/`.
+
+---
+
+### Using the Form Builder
+
+After installation, you can use the FormBuilder component:
+
+```tsx
+import { FormBuilder } from "@/components/forms";
+
+export default function Page() {
+  return <FormBuilder />;
+}
+```
+
+### Using JSON Utilities
+
+The form builder includes JSON import/export utilities that can be used independently:
+
+```tsx
+import {
+  downloadFormConfig,
+  parseFormConfig,
+  type FormConfig
+} from "@/components/forms";
+
+// Export a form configuration to JSON
+const formConfig: FormConfig = {
+  id: "form_123",
+  title: "My Form",
+  fields: [...]
+};
+
+downloadFormConfig(formConfig); // Downloads as JSON file
+
+// Parse and validate an imported form configuration
+const jsonString = `{"id": "form_123", "title": "My Form", "fields": []}`;
+const config = parseFormConfig(jsonString);
+if (config) {
+  // Use the validated config
+  console.log(config);
+}
+```
+
+### Available Exports
+
+From `@/components/forms`:
+
+**Components:**
+- `FormBuilder` - The main form builder component
+- `FormRenderer` - Component to render forms from configuration
+
+**Types:**
+- `FormConfig` - Complete form configuration
+- `FieldConfig` - Individual field configuration
+- `FieldType` - Available field types
+- `FieldOption` - Options for select/radio/checkbox fields
+- `ValidationRule` - Validation rules for fields
+
+**Utilities:**
+- `downloadFormConfig(formConfig)` - Export form config as JSON file
+- `parseFormConfig(jsonString)` - Parse and validate JSON form config
+- `createDefaultField(type, index)` - Create a field with defaults
+- `createEmptyForm()` - Create an empty form configuration
+- `generateFormSchema(config)` - Generate Zod schema for form validation
+- `getDefaultValues(config)` - Extract default values from config
+
 ---
 
 ### Registry Structure
@@ -100,20 +168,26 @@ registry/
 └── new-york/
     ├── inline-edit/
     │   └── inline-edit.tsx
-    └── form-builder/
+    └── forms/
         ├── lib/
         │   ├── form-config.ts
         │   └── form-utils.ts
-        └── components/
-            ├── field-actions.tsx
-            ├── field-editor.tsx
-            ├── field-header.tsx
-            ├── field-preview.tsx
-            ├── form-builder.tsx
-            ├── form-renderer.tsx
-            ├── option-list.tsx
-            └── sortable-field.tsx
+        ├── components/
+        │   ├── field-actions.tsx
+        │   ├── field-editor.tsx
+        │   ├── field-header.tsx
+        │   ├── field-preview.tsx
+        │   ├── option-list.tsx
+        │   └── sortable-field.tsx
+        ├── form-builder.tsx
+        ├── form-renderer.tsx
+        └── index.ts
 ```
+
+**Installation Structure:**
+When installed, components will be placed in:
+- `components/forms/` - Form builder components and utilities
+- `components/ui/inline-edit/` - Inline edit component
 
 ---
 
