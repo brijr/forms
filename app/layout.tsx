@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Form Builder by Bridger Tower",
+  title:
+    "Open Source React and shadcn/ui Form Builder | Created by Bridger Tower",
   description:
     "Build and customize forms with an intuitive drag-and-drop interface",
 };
