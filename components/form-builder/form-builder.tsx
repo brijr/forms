@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+
 import Image from "next/image";
 import Logo from "@/public/logo.svg";
+
 import {
   DndContext,
   closestCenter,
@@ -28,6 +30,7 @@ import {
 import {
   PlusIcon,
   TypeIcon,
+  ArrowUpRightIcon,
   MailIcon,
   PhoneIcon,
   HashIcon,
@@ -206,10 +209,19 @@ export function FormBuilder() {
             <Image
               src={Logo}
               alt="Logo"
-              width={12}
+              width={16}
               className="invert dark:invert-0"
             />
-            <span className="text-sm font-medium">brijr/forms</span>
+            <h2 className="text-sm font-medium grid">
+              <span>brijr/forms</span>
+              <a
+                href="https://github.com/brijr/forms"
+                target="_blank"
+                className="text-muted-foreground hover:text-foreground text-sm flex items-center gap-0.5"
+              >
+                Github <ArrowUpRightIcon size={14} />
+              </a>
+            </h2>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex bg-muted/50 p-1 rounded-md">

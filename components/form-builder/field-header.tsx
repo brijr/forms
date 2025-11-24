@@ -1,9 +1,21 @@
 "use client";
 
-import { FieldConfig } from "@/lib/form-config";
+import { FieldConfig, FieldType } from "@/lib/form-config";
 import { InlineEdit } from "@/components/ui/inline-edit";
-import { getFieldTypeIcon } from "@/lib/form-utils";
-import { LucideIcon } from "lucide-react";
+import {
+  Type,
+  Mail,
+  Phone,
+  Hash,
+  AlignLeft,
+  ChevronDownCircle,
+  CheckSquare,
+  CircleDot,
+  SquareCheck,
+  ToggleRight,
+  SlidersHorizontal,
+  LucideIcon,
+} from "lucide-react";
 
 interface FieldHeaderProps {
   field: FieldConfig;
@@ -11,13 +23,37 @@ interface FieldHeaderProps {
   onDescriptionUpdate: (value: string) => void;
 }
 
+const FIELD_ICON_MAP: Record<FieldType, LucideIcon> = {
+  text: Type,
+  email: Mail,
+  phone: Phone,
+  number: Hash,
+  textarea: AlignLeft,
+  select: ChevronDownCircle,
+  "checkbox-group": CheckSquare,
+  radio: CircleDot,
+  "yes-no": CircleDot,
+  checkbox: SquareCheck,
+  switch: ToggleRight,
+  slider: SlidersHorizontal,
+};
+
+function FieldTypeIcon({
+  type,
+  className,
+}: {
+  type: FieldType;
+  className?: string;
+}) {
+  const Icon = FIELD_ICON_MAP[type] || Type;
+  return <Icon className={className} />;
+}
+
 export function FieldHeader({
   field,
   onLabelUpdate,
   onDescriptionUpdate,
 }: FieldHeaderProps) {
-  const FieldTypeIcon = getFieldTypeIcon(field.type);
-
   if (field.type === "checkbox" || field.type === "switch") {
     return (
       <div className="flex items-center justify-end gap-2">
@@ -25,7 +61,7 @@ export function FieldHeader({
           className="flex items-center gap-2 text-muted-foreground/60"
           title={field.type}
         >
-          <FieldTypeIcon className="h-4 w-4" />
+          <FieldTypeIcon type={field.type} className="h-4 w-4" />
           <span className="text-[10px] uppercase">{field.type}</span>
         </div>
       </div>
@@ -45,7 +81,7 @@ export function FieldHeader({
           className="flex items-center gap-2 text-muted-foreground/60"
           title={field.type}
         >
-          <FieldTypeIcon className="h-4 w-4" />
+          <FieldTypeIcon type={field.type} className="h-4 w-4" />
           <span className="text-[10px] uppercase">{field.type}</span>
         </div>
       </div>
