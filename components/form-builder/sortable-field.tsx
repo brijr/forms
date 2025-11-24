@@ -1,23 +1,25 @@
 "use client";
 
-import { useSortable } from "@dnd-kit/sortable";
+import { GripVertical } from "lucide-react";
+import { FieldActions } from "./field-actions";
+import { FieldPreview } from "./field-preview";
+import { FieldEditor } from "./field-editor";
+import { FieldHeader } from "./field-header";
+import { InlineEdit } from "@/components/ui/inline-edit";
+import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { CSS } from "@dnd-kit/utilities";
+
+import { useSortable } from "@dnd-kit/sortable";
+import { useState } from "react";
+
 import {
   FieldConfig,
   SelectFieldConfig,
   CheckboxGroupFieldConfig,
   RadioFieldConfig,
 } from "@/lib/form-config";
-import { GripVertical } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { InlineEdit } from "@/components/ui/inline-edit";
-import { useState } from "react";
-import { FieldEditor } from "./field-editor";
-import { FieldPreview } from "./field-preview";
-import { FieldHeader } from "./field-header";
-import { FieldActions } from "./field-actions";
 import {
   supportsPlaceholder,
   supportsRequired,
