@@ -25,7 +25,8 @@ export function CopyCommand({ command }: CopyCommandProps) {
       ) : (
         <Copy className="h-3 w-3 shrink-0" />
       )}
-      <code className="text-xs font-mono text-muted-foreground truncate max-w-[400px]">
+      <span className="md:hidden">Copy</span>
+      <code className="text-xs font-mono text-muted-foreground truncate max-w-[400px] hidden md:inline">
         {command}
       </code>
     </Button>
