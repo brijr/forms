@@ -38,6 +38,7 @@ import type { FormConfig, FieldType, FieldConfig } from "@/lib/form-config";
 import { createDefaultField, createEmptyForm } from "@/lib/form-config";
 import { downloadFormConfig, parseFormConfig } from "@/lib/form-utils";
 import { FormRenderer } from "./form-renderer";
+import { SortableField } from "./sortable-field";
 
 type ToolboxItem = {
   type: FieldType;
@@ -323,16 +324,17 @@ export function FormBuilder() {
                       strategy={verticalListSortingStrategy}
                     >
                       <div className="space-y-4 pb-20">
-                        <FormRenderer
-                          config={formConfig}
-                          builderMode={true}
-                          selectedFieldId={selectedFieldId}
-                          onFieldSelect={(fieldId) => setSelectedFieldId(fieldId)}
-                          onFieldDelete={(fieldId) => handleDeleteField(fieldId)}
-                          onFieldDuplicate={(fieldId) => handleDuplicateField(fieldId)}
-                          onFieldUpdate={handleUpdateField}
-                          showSubmitButton={false}
-                        />
+                        {formConfig.fields.map((field) => (
+                          <SortableField
+                            key={field.id}
+                            field={field}
+                            isSelected={selectedFieldId === field.id}
+                            onSelect={() => setSelectedFieldId(field.id)}
+                            onDelete={() => handleDeleteField(field.id)}
+                            onDuplicate={() => handleDuplicateField(field.id)}
+                            onUpdate={handleUpdateField}
+                          />
+                        ))}
                       </div>
                     </SortableContext>
                   </DndContext>
@@ -347,8 +349,14 @@ export function FormBuilder() {
             <div className="mx-auto max-w-2xl">
               <FormRenderer
                 config={formConfig}
-                builderMode={false}
-                showSubmitButton={true}
+                onFieldUpdate={(updatedField) => {
+                  setFormConfig({
+                    ...formConfig,
+                    fields: formConfig.fields.map((f) =>
+                      f.id === updatedField.id ? updatedField : f
+                    ),
+                  });
+                }}
               />
             </div>
           </div>
