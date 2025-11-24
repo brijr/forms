@@ -758,21 +758,50 @@ export function FormRenderer({
             children={(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
+              const currentValue = field.state.value as number;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>
-                    {fieldConfig.label}: {String(field.state.value as number)}
-                  </FieldLabel>
+                  <div className="flex items-center justify-between mb-2">
+                    <FieldLabel
+                      htmlFor={onFieldUpdate ? undefined : field.name}
+                      onClick={(e) => {
+                        if (onFieldUpdate) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }
+                      }}
+                    >
+                      {onFieldUpdate ? (
+                        <InlineEdit
+                          value={fieldConfig.label}
+                          onSave={(val) =>
+                            onFieldUpdate({ ...fieldConfig, label: val })
+                          }
+                          className="font-medium"
+                          placeholder="Field Label"
+                        />
+                      ) : (
+                        fieldConfig.label
+                      )}
+                    </FieldLabel>
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {currentValue}
+                    </span>
+                  </div>
                   <Slider
                     id={field.name}
                     name={field.name}
-                    value={[field.state.value as number]}
+                    value={[currentValue]}
                     onValueChange={(values) => field.handleChange(values[0])}
                     min={fieldConfig.min}
                     max={fieldConfig.max}
                     step={fieldConfig.step}
                     aria-invalid={isInvalid}
                   />
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                    <span>{fieldConfig.min ?? 0}</span>
+                    <span>{fieldConfig.max ?? 100}</span>
+                  </div>
                   {fieldConfig.description && (
                     <FieldDescription>
                       {fieldConfig.description}

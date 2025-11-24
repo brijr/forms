@@ -388,8 +388,11 @@ export function SortableField({
                   placeholder="Field Label"
                 />
                 {/* Field Type Icon */}
-                <div className="flex items-center gap-2 text-muted-foreground/60">
-                  <FieldTypeIcon className="h-4 w-4" title={field.type} />
+                <div
+                  className="flex items-center gap-2 text-muted-foreground/60"
+                  title={field.type}
+                >
+                  <FieldTypeIcon className="h-4 w-4" />
                   <span className="text-[10px] uppercase">{field.type}</span>
                 </div>
               </div>
@@ -403,10 +406,13 @@ export function SortableField({
             </div>
           )}
           {(field.type === "checkbox" || field.type === "switch") && (
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-end gap-2">
               {/* Field Type Icon */}
-              <div className="flex items-center gap-2 text-muted-foreground/60">
-                <FieldTypeIcon className="h-4 w-4" title={field.type} />
+              <div
+                className="flex items-center gap-2 text-muted-foreground/60"
+                title={field.type}
+              >
+                <FieldTypeIcon className="h-4 w-4" />
                 <span className="text-[10px] uppercase">{field.type}</span>
               </div>
             </div>
