@@ -91,7 +91,6 @@ export function SortableField({
           <Input
             disabled
             type={field.type}
-            placeholder={field.placeholder}
             className="cursor-pointer bg-muted/20"
           />
         );
@@ -99,7 +98,6 @@ export function SortableField({
         return (
           <Textarea
             disabled
-            placeholder={field.placeholder}
             className="cursor-pointer bg-muted/20"
             rows={field.rows}
           />
@@ -186,40 +184,42 @@ export function SortableField({
         );
       case "radio":
         return (
-          <div className="space-y-2">
-             {field.options.map((opt, idx) => (
-              <div key={idx} className="flex items-center gap-2 group/option">
-                <RadioGroupItem value={opt.value} id={`${field.id}-${idx}`} disabled />
-                <InlineEdit
-                    value={opt.label}
-                    onSave={(val) => handleOptionUpdate(idx, val)}
-                    className="flex-1 text-sm"
-                />
-                 <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 opacity-0 group-hover/option:opacity-100 text-muted-foreground hover:text-destructive"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleRemoveOption(idx);
-                    }}
-                >
-                    <X className="h-3 w-3" />
-                </Button>
-              </div>
-            ))}
-             <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    handleAddOption();
-                }}
-                className="h-7 text-xs text-muted-foreground ml-6"
-            >
-                <Plus className="h-3 w-3 mr-1" /> Add Option
-            </Button>
-          </div>
+          <RadioGroup disabled>
+            <div className="space-y-2">
+               {field.options.map((opt, idx) => (
+                <div key={idx} className="flex items-center gap-2 group/option">
+                  <RadioGroupItem value={opt.value} id={`${field.id}-${idx}`} />
+                  <InlineEdit
+                      value={opt.label}
+                      onSave={(val) => handleOptionUpdate(idx, val)}
+                      className="flex-1 text-base"
+                  />
+                   <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 opacity-0 group-hover/option:opacity-100 text-muted-foreground hover:text-destructive"
+                      onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveOption(idx);
+                      }}
+                  >
+                      <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ))}
+               <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddOption();
+                  }}
+                  className="h-7 text-xs text-muted-foreground ml-6"
+              >
+                  <Plus className="h-3 w-3 mr-1" /> Add Option
+              </Button>
+            </div>
+          </RadioGroup>
         );
       case "checkbox":
         return (
@@ -312,7 +312,7 @@ export function SortableField({
                  <InlineEdit
                     value={field.label}
                     onSave={(val) => onUpdate({ ...field, label: val })}
-                    className="font-medium text-sm text-foreground"
+                    className="font-medium text-base text-foreground"
                     placeholder="Field Label"
                 />
                 {field.validation?.required && (
@@ -323,28 +323,41 @@ export function SortableField({
              <InlineEdit
                 value={field.description || ""}
                 onSave={(val) => onUpdate({ ...field, description: val })}
-                className="text-xs text-muted-foreground"
+                className="text-base text-muted-foreground"
                 placeholder="Description (optional)"
             />
           </div>
         )}
 
         {/* Render Preview */}
-        <div className=""> {/* Removed pointer-events-none to allow interaction with inline edits */}
+        <div className="relative"> {/* Removed pointer-events-none to allow interaction with inline edits */}
             {renderFieldPreview()}
+            {/* Inline Placeholder Edit (only for inputs) */}
+            {(field.type === "text" || field.type === "email" || field.type === "number") && (
+                <div className="absolute left-3 top-0 h-9 flex items-center pointer-events-none">
+                    <div className="pointer-events-auto">
+                        <InlineEdit
+                            value={field.placeholder || ""}
+                            onSave={(val) => onUpdate({ ...field, placeholder: val })}
+                            className="text-base text-muted-foreground font-normal"
+                            placeholder="Placeholder text..."
+                        />
+                    </div>
+                </div>
+            )}
+            {(field.type === "textarea") && (
+                <div className="absolute left-3 top-2 pointer-events-none">
+                    <div className="pointer-events-auto">
+                        <InlineEdit
+                            value={field.placeholder || ""}
+                            onSave={(val) => onUpdate({ ...field, placeholder: val })}
+                            className="text-base text-muted-foreground font-normal"
+                            placeholder="Placeholder text..."
+                        />
+                    </div>
+                </div>
+            )}
         </div>
-
-        {/* Inline Placeholder Edit (only for inputs) */}
-        {(field.type === "text" || field.type === "email" || field.type === "number" || field.type === "textarea") && (
-             <div className="pt-1">
-                <InlineEdit
-                    value={field.placeholder || ""}
-                    onSave={(val) => onUpdate({ ...field, placeholder: val })}
-                    className="text-xs text-muted-foreground/60 italic"
-                    placeholder="Edit placeholder..."
-                />
-             </div>
-        )}
       </div>
 
       {/* Actions */}

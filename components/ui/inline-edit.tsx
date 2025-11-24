@@ -60,7 +60,10 @@ export function InlineEdit({
           onBlur={handleSave}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className={cn("min-h-[60px] resize-none", className)}
+          className={cn(
+            "border-none shadow-none px-1 -mx-1 focus-visible:ring-0 bg-transparent resize-none min-h-[1.5em] py-0 w-full text-base",
+            className
+          )}
           rows={2}
         />
       );
@@ -73,7 +76,10 @@ export function InlineEdit({
         onBlur={handleSave}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className={cn("h-8", className)}
+        className={cn(
+          "border-none shadow-none px-1 -mx-1 focus-visible:ring-0 h-auto bg-transparent py-0 min-h-[1.5em] w-full text-base",
+          className
+        )}
       />
     );
   }
@@ -81,11 +87,11 @@ export function InlineEdit({
   return (
     <div
       onClick={(e) => {
-          e.stopPropagation();
-          setIsEditing(true);
+        e.stopPropagation();
+        setIsEditing(true);
       }}
       className={cn(
-        "cursor-text hover:bg-muted/50 rounded px-1 -mx-1 transition-colors min-h-[1.5em]",
+        "cursor-text hover:bg-muted/50 rounded px-1 -mx-1 transition-colors min-h-[1.5em] text-base",
         !value && "text-muted-foreground italic",
         className
       )}

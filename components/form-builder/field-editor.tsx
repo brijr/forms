@@ -46,7 +46,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold">Validation Settings</h3>
+        <h3 className="text-base font-semibold">Validation Settings</h3>
         <Button
           variant="ghost"
           size="icon"
@@ -68,7 +68,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
           />
           <label
             htmlFor="field-required"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
             Required Field
           </label>
@@ -77,7 +77,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
         {supportsLength && (
           <div className="grid grid-cols-2 gap-4">
             <Field>
-              <FieldLabel htmlFor="field-minlength">Min Length</FieldLabel>
+              <FieldLabel htmlFor="field-minlength" className="text-base">Min Length</FieldLabel>
               <Input
                 id="field-minlength"
                 type="number"
@@ -91,10 +91,11 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                 }
                 placeholder="None"
                 min={0}
+                className="md:text-base"
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="field-maxlength">Max Length</FieldLabel>
+              <FieldLabel htmlFor="field-maxlength" className="text-base">Max Length</FieldLabel>
               <Input
                 id="field-maxlength"
                 type="number"
@@ -108,22 +109,23 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                 }
                 placeholder="None"
                 min={0}
+                className="md:text-base"
               />
             </Field>
           </div>
         )}
 
         {supportsLength && (
-          <Field>
-            <FieldLabel htmlFor="field-pattern">Regex Pattern</FieldLabel>
-            <Input
+        <Field>
+          <FieldLabel htmlFor="field-pattern" className="text-base">Regex Pattern</FieldLabel>
+          <Input
               id="field-pattern"
               value={localField.validation?.pattern ?? ""}
               onChange={(e) =>
                 handleValidationUpdate({ pattern: e.target.value })
               }
               placeholder="e.g., ^[A-Za-z]+$"
-              className="font-mono text-sm"
+              className="font-mono text-base md:text-base"
             />
           </Field>
         )}
@@ -131,7 +133,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
         {supportsMinMax && (
           <div className="grid grid-cols-2 gap-4">
             <Field>
-              <FieldLabel htmlFor="val-min">Min Value</FieldLabel>
+              <FieldLabel htmlFor="val-min" className="text-base">Min Value</FieldLabel>
               <Input
                 id="val-min"
                 type="number"
@@ -144,10 +146,11 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                   })
                 }
                 placeholder="None"
+                className="md:text-base"
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="val-max">Max Value</FieldLabel>
+              <FieldLabel htmlFor="val-max" className="text-base">Max Value</FieldLabel>
               <Input
                 id="val-max"
                 type="number"
@@ -160,13 +163,14 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
                   })
                 }
                 placeholder="None"
+                className="md:text-base"
               />
             </Field>
           </div>
         )}
 
         <Field>
-          <FieldLabel htmlFor="field-custom-error">
+          <FieldLabel htmlFor="field-custom-error" className="text-base">
             Custom Error Message
           </FieldLabel>
           <Textarea
@@ -177,6 +181,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
             }
             placeholder="Message to show when validation fails"
             rows={2}
+            className="md:text-base"
           />
         </Field>
       </FieldGroup>

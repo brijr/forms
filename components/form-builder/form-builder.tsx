@@ -266,7 +266,7 @@ export function FormBuilder() {
             {/* Left Sidebar - Toolbox */}
             <div className="w-64 overflow-y-auto border-r bg-muted/10 p-4">
               <div className="space-y-6">
-                <h2 className="text-sm font-semibold px-1">Fields</h2>
+                <h2 className="sr-only">Fields</h2>
                 {TOOLBOX_CATEGORIES.map((category) => (
                   <div key={category.name} className="space-y-2">
                     <h3 className="text-xs font-medium text-muted-foreground px-1 uppercase tracking-wider">
