@@ -280,7 +280,7 @@ export function FormBuilder() {
           <SidebarInset className="flex-1 overflow-y-auto bg-muted/20 p-8 w-full">
             {/* Builder Mode */}
             {viewMode === "builder" && (
-              <div className="mx-auto sm:w-2xl md:w-3xl lg:w-4xl min-h-full">
+              <div className="mx-auto w-full max-w-4xl min-h-full">
                 <div className="mb-6">
                   <Input
                     value={formConfig.title}
