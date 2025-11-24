@@ -131,7 +131,7 @@ export function SortableField({
         <div
           {...attributes}
           {...listeners}
-          className="p-1 cursor-grab active:cursor-grabbing text-muted-foreground/30 hover:text-foreground transition-colors"
+          className="p-0.5 -ml-8 cursor-grab active:cursor-grabbing text-muted-foreground/30 hover:text-foreground transition-colors"
         >
           <GripVertical className="h-5 w-5" />
         </div>
@@ -141,7 +141,7 @@ export function SortableField({
           ref={setNodeRef}
           style={style}
           onClick={() => onSelect()}
-          className="relative group flex items-start gap-3 px-4 pb-4 flex-1"
+          className="relative group flex items-start gap-3 pr-4 pb-4 flex-1"
         >
           {/* Content */}
           <div className="flex-1 space-y-3">

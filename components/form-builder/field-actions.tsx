@@ -15,11 +15,10 @@ export function FieldActions({
   onDelete,
 }: FieldActionsProps) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1.5">
       <Button
-        variant="ghost"
+        variant="outline"
         size="icon"
-        className="h-8 w-8 text-muted-foreground hover:text-primary"
         onClick={onSettingsClick}
         title="Validation Settings"
       >
@@ -27,22 +26,15 @@ export function FieldActions({
       </Button>
       {onDuplicate && (
         <Button
-          variant="ghost"
+          variant="outline"
           size="icon"
-          className="h-8 w-8 text-muted-foreground hover:text-foreground"
           onClick={onDuplicate}
           title="Duplicate"
         >
           <Copy className="h-4 w-4" />
         </Button>
       )}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8 text-muted-foreground hover:text-destructive"
-        onClick={onDelete}
-        title="Delete"
-      >
+      <Button variant="outline" size="icon" onClick={onDelete} title="Delete">
         <Trash2 className="h-4 w-4" />
       </Button>
     </div>

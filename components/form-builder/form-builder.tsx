@@ -323,14 +323,14 @@ export function FormBuilder() {
             {/* Center - Canvas */}
             <div className="flex-1 overflow-y-auto bg-muted/20 p-8">
               <div className="mx-auto max-w-3xl min-h-full">
-                <div className="flex-1 space-y-0.5 mb-6">
+                <div className="flex-1 mb-6">
                   <Input
                     value={formConfig.title}
                     onChange={(e) =>
                       setFormConfig({ ...formConfig, title: e.target.value })
                     }
-                    className="text-lg border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
                     placeholder="Form Title"
+                    className="p-0 focus-visible:ring-0 focus-visible:ring-offset-0 border-none shadow-none"
                   />
                   <Input
                     value={formConfig.description || ""}
@@ -340,8 +340,8 @@ export function FormBuilder() {
                         description: e.target.value,
                       })
                     }
-                    className="text-lg text-muted-foreground border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
-                    placeholder="Form description (optional)"
+                    placeholder="Form description"
+                    className="p-0 focus-visible:ring-0 focus-visible:ring-offset-0 border-none shadow-none"
                   />
                 </div>
                 {formConfig.fields.length === 0 ? (
