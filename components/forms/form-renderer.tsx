@@ -825,7 +825,7 @@ export function FormRenderer({
         e.preventDefault();
         form.handleSubmit();
       }}
-      className="space-y-6"
+      className="space-y-3"
     >
       {config.title && (
         <div className="space-y-2">
@@ -839,10 +839,10 @@ export function FormRenderer({
       <FieldGroup>{config.fields.map(renderField)}</FieldGroup>
 
       {showSubmitButton && (
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-3">
           <Button type="submit">Submit</Button>
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
-            Reset
+          <Button type="button" variant="ghost" onClick={() => form.reset()}>
+            Reset Form
           </Button>
         </div>
       )}
