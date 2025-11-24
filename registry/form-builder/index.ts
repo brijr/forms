@@ -3,8 +3,8 @@ export { FormBuilder } from "./form-builder";
 export { FormRenderer } from "./form-renderer";
 
 // Export hook
-export { useFormBuilder } from "@/hooks/form-builder/use-form-builder";
-export type { ViewMode } from "@/hooks/form-builder/use-form-builder";
+export { useFormBuilder } from "./use-form-builder";
+export type { ViewMode } from "./use-form-builder";
 
 // Export types
 export type {
@@ -24,14 +24,14 @@ export type {
   SliderFieldConfig,
   YesNoFieldConfig,
   FieldTypeConfig,
-} from "@/lib/form-builder/form-config";
+} from "./lib/form-config";
 
 export {
   createDefaultField,
   createEmptyForm,
   FIELD_TYPES,
   CATEGORIES,
-} from "@/lib/form-builder/form-config";
+} from "./lib/form-config";
 
 // Export JSON utilities
 export {
@@ -45,4 +45,4 @@ export {
   hasOptions,
   supportsPlaceholder,
   supportsRequired,
-} from "@/lib/form-builder/form-utils";
+} from "./lib/form-utils";

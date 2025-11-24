@@ -186,24 +186,39 @@ registry/
     ├── lib/
     │   ├── form-config.ts
     │   └── form-utils.ts
-    ├── hooks/
-    │   └── use-form-builder.ts
-    ├── components/
-    │   ├── field-editor.tsx
-    │   ├── field-preview.tsx
-    │   ├── field-toolbox.tsx
-    │   ├── floating-controls.tsx
-    │   ├── option-list.tsx
-    │   └── sortable-field.tsx
+    ├── field-editor.tsx
+    ├── field-preview.tsx
+    ├── field-toolbox.tsx
+    ├── floating-controls.tsx
     ├── form-builder.tsx
     ├── form-renderer.tsx
-    └── index.ts
+    ├── index.ts
+    ├── option-list.tsx
+    ├── sortable-field.tsx
+    └── use-form-builder.ts
 ```
 
 **Installation Structure:**
-When installed, components will be placed in:
-- `components/form-builder/` - Form builder components and utilities
-- `components/ui/inline-edit/` - Inline edit component
+When installed via shadcn, everything goes into `components/form-builder/`:
+```
+components/
+├── form-builder/
+│   ├── lib/
+│   │   ├── form-config.ts
+│   │   └── form-utils.ts
+│   ├── field-editor.tsx
+│   ├── field-preview.tsx
+│   ├── field-toolbox.tsx
+│   ├── floating-controls.tsx
+│   ├── form-builder.tsx
+│   ├── form-renderer.tsx
+│   ├── index.ts
+│   ├── option-list.tsx
+│   ├── sortable-field.tsx
+│   └── use-form-builder.ts
+└── ui/
+    └── inline-edit.tsx
+```
 
 ---
 

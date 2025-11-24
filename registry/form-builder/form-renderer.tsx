@@ -27,8 +27,8 @@ import {
   FieldSet,
   FieldLegend,
 } from "@/components/ui/field";
-import type { FormConfig, FieldConfig } from "@/lib/form-builder/form-config";
-import { generateFormSchema, getDefaultValues } from "@/lib/form-builder/form-utils";
+import type { FormConfig, FieldConfig } from "./lib/form-config";
+import { generateFormSchema, getDefaultValues } from "./lib/form-utils";
 import { InlineEdit } from "@/components/ui/inline-edit";
 
 interface FormRendererProps {

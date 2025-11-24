@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { MousePointerClick } from "lucide-react";
 import { toast } from "sonner";
-import { useFormBuilder } from "@/hooks/form-builder/use-form-builder";
+import { useFormBuilder } from "./use-form-builder";
 import { FormRenderer } from "./form-renderer";
 import { SortableField } from "./sortable-field";
 import { FloatingControls } from "./floating-controls";
