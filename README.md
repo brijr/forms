@@ -60,7 +60,7 @@ A click-to-edit component supporting both single-line and multiline inline editi
 #### Form Builder
 A fully-featured form builder with drag-and-drop, field validation, and form rendering.
 
-**Registry Dependencies:** `inline-edit`, `button`, `input`, `textarea`, `select`, `checkbox`, `radio-group`, `switch`, `slider`, `field`, `dialog`, `tooltip`, `label`
+**Registry Dependencies:** `inline-edit`, `button`, `input`, `textarea`, `select`, `checkbox`, `radio-group`, `switch`, `slider`, `field`, `dialog`, `label`, `dropdown-menu`, `sidebar`
 
 **NPM Dependencies:** `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`, `@tanstack/react-form`, `@tanstack/zod-form-adapter`, `zod`, `sonner`, `lucide-react`
 
@@ -152,12 +152,16 @@ From `@/components/forms`:
 - `FormBuilder` - The main form builder component
 - `FormRenderer` - Component to render forms from configuration
 
+**Hooks:**
+- `useFormBuilder` - Hook for form state management (fields, selection, view mode, CRUD operations)
+
 **Types:**
 - `FormConfig` - Complete form configuration
 - `FieldConfig` - Individual field configuration
 - `FieldType` - Available field types
 - `FieldOption` - Options for select/radio/checkbox fields
 - `ValidationRule` - Validation rules for fields
+- `ViewMode` - Builder view modes (`"builder"` | `"preview"` | `"json"`)
 
 **Utilities:**
 - `downloadFormConfig(formConfig)` - Export form config as JSON file
@@ -166,6 +170,8 @@ From `@/components/forms`:
 - `createEmptyForm()` - Create an empty form configuration
 - `generateFormSchema(config)` - Generate Zod schema for form validation
 - `getDefaultValues(config)` - Extract default values from config
+- `FIELD_TYPES` - Array of available field type configurations
+- `CATEGORIES` - Field type categories for the toolbox
 
 ---
 
@@ -180,11 +186,13 @@ registry/
         ├── lib/
         │   ├── form-config.ts
         │   └── form-utils.ts
+        ├── hooks/
+        │   └── use-form-builder.ts
         ├── components/
-        │   ├── field-actions.tsx
         │   ├── field-editor.tsx
-        │   ├── field-header.tsx
         │   ├── field-preview.tsx
+        │   ├── field-toolbox.tsx
+        │   ├── floating-controls.tsx
         │   ├── option-list.tsx
         │   └── sortable-field.tsx
         ├── form-builder.tsx
