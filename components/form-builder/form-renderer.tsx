@@ -30,12 +30,18 @@ import {
 import type { FormConfig, FieldConfig } from "@/lib/form-config";
 import { generateFormSchema, getDefaultValues } from "@/lib/form-utils";
 import { InlineEdit } from "@/components/ui/inline-edit";
+import { SortableFormField } from "./sortable-form-field";
 
 interface FormRendererProps {
   config: FormConfig;
   onSubmit?: (values: Record<string, unknown>) => void;
   showSubmitButton?: boolean;
   onFieldUpdate?: (field: FieldConfig) => void;
+  builderMode?: boolean;
+  selectedFieldId?: string | null;
+  onFieldSelect?: (fieldId: string) => void;
+  onFieldDelete?: (fieldId: string) => void;
+  onFieldDuplicate?: (fieldId: string) => void;
 }
 
 export function FormRenderer({
@@ -43,6 +49,11 @@ export function FormRenderer({
   onSubmit,
   showSubmitButton = true,
   onFieldUpdate,
+  builderMode = false,
+  selectedFieldId,
+  onFieldSelect,
+  onFieldDelete,
+  onFieldDuplicate,
 }: FormRendererProps) {
   const formSchema = generateFormSchema(config);
   const defaultValues = getDefaultValues(config);
@@ -823,7 +834,9 @@ export function FormRenderer({
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        form.handleSubmit();
+        if (!builderMode) {
+          form.handleSubmit();
+        }
       }}
       className="space-y-6"
     >
@@ -836,7 +849,37 @@ export function FormRenderer({
         </div>
       )}
 
-      <FieldGroup>{config.fields.map(renderField)}</FieldGroup>
+      <FieldGroup className={builderMode ? "gap-4" : undefined}>
+        {config.fields.map((fieldConfig) => {
+          const fieldElement = renderField(fieldConfig);
+          if (builderMode && fieldElement) {
+            return (
+              <SortableFormField
+                key={fieldConfig.id}
+                field={fieldConfig}
+                isSelected={selectedFieldId === fieldConfig.id}
+                onSelect={() => onFieldSelect?.(fieldConfig.id)}
+                onDelete={(e) => {
+                  e.stopPropagation();
+                  onFieldDelete?.(fieldConfig.id);
+                }}
+                onDuplicate={(e) => {
+                  e.stopPropagation();
+                  onFieldDuplicate?.(fieldConfig.id);
+                }}
+                onUpdate={(updatedField) => {
+                  if (onFieldUpdate) {
+                    onFieldUpdate(updatedField);
+                  }
+                }}
+              >
+                {fieldElement}
+              </SortableFormField>
+            );
+          }
+          return fieldElement;
+        })}
+      </FieldGroup>
 
       {showSubmitButton && (
         <div className="flex gap-2">
