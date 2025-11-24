@@ -58,51 +58,51 @@
       ],
       "files": [
         {
-          "path": "registry/new-york/forms/lib/form-config.ts",
+          "path": "registry/new-york/form-builder/lib/form-config.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/new-york/forms/lib/form-utils.ts",
+          "path": "registry/new-york/form-builder/lib/form-utils.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/new-york/forms/hooks/use-form-builder.ts",
+          "path": "registry/new-york/form-builder/hooks/use-form-builder.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/new-york/forms/components/field-editor.tsx",
+          "path": "registry/new-york/form-builder/components/field-editor.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/forms/components/field-preview.tsx",
+          "path": "registry/new-york/form-builder/components/field-preview.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/forms/components/field-toolbox.tsx",
+          "path": "registry/new-york/form-builder/components/field-toolbox.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/forms/components/floating-controls.tsx",
+          "path": "registry/new-york/form-builder/components/floating-controls.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/forms/components/option-list.tsx",
+          "path": "registry/new-york/form-builder/components/option-list.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/forms/components/sortable-field.tsx",
+          "path": "registry/new-york/form-builder/components/sortable-field.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/forms/form-builder.tsx",
+          "path": "registry/new-york/form-builder/form-builder.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/forms/form-renderer.tsx",
+          "path": "registry/new-york/form-builder/form-renderer.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/forms/index.ts",
+          "path": "registry/new-york/form-builder/index.ts",
           "type": "registry:component"
         }
       ]

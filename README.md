@@ -109,7 +109,7 @@ npx shadcn@latest add http://localhost:3000/r/form-builder.json
 After installation, you can use the FormBuilder component:
 
 ```tsx
-import { FormBuilder } from "@/components/forms";
+import { FormBuilder } from "@/components/form-builder";
 
 export default function Page() {
   return <FormBuilder />;
@@ -125,7 +125,7 @@ import {
   downloadFormConfig,
   parseFormConfig,
   type FormConfig
-} from "@/components/forms";
+} from "@/components/form-builder";
 
 // Export a form configuration to JSON
 const formConfig: FormConfig = {
@@ -147,7 +147,7 @@ if (config) {
 
 ### Available Exports
 
-From `@/components/forms`:
+From `@/components/form-builder`:
 
 **Components:**
 - `FormBuilder` - The main form builder component
@@ -183,7 +183,7 @@ registry/
 └── new-york/
     ├── inline-edit/
     │   └── inline-edit.tsx
-    └── forms/
+    └── form-builder/
         ├── lib/
         │   ├── form-config.ts
         │   └── form-utils.ts
@@ -203,7 +203,7 @@ registry/
 
 **Installation Structure:**
 When installed, components will be placed in:
-- `components/forms/` - Form builder components and utilities
+- `components/form-builder/` - Form builder components and utilities
 - `components/ui/inline-edit/` - Inline edit component
 
 ---
