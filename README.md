@@ -180,25 +180,24 @@ From `@/components/form-builder`:
 
 ```
 registry/
-└── new-york/
-    ├── inline-edit/
-    │   └── inline-edit.tsx
-    └── form-builder/
-        ├── lib/
-        │   ├── form-config.ts
-        │   └── form-utils.ts
-        ├── hooks/
-        │   └── use-form-builder.ts
-        ├── components/
-        │   ├── field-editor.tsx
-        │   ├── field-preview.tsx
-        │   ├── field-toolbox.tsx
-        │   ├── floating-controls.tsx
-        │   ├── option-list.tsx
-        │   └── sortable-field.tsx
-        ├── form-builder.tsx
-        ├── form-renderer.tsx
-        └── index.ts
+├── inline-edit/
+│   └── inline-edit.tsx
+└── form-builder/
+    ├── lib/
+    │   ├── form-config.ts
+    │   └── form-utils.ts
+    ├── hooks/
+    │   └── use-form-builder.ts
+    ├── components/
+    │   ├── field-editor.tsx
+    │   ├── field-preview.tsx
+    │   ├── field-toolbox.tsx
+    │   ├── floating-controls.tsx
+    │   ├── option-list.tsx
+    │   └── sortable-field.tsx
+    ├── form-builder.tsx
+    ├── form-renderer.tsx
+    └── index.ts
 ```
 
 **Installation Structure:**
@@ -213,11 +212,11 @@ When installed, components will be placed in:
 ```
 ├── app/                    # Next.js app directory
 ├── components/
-│   ├── form-builder/      # Form builder components (source)
 │   └── ui/                # shadcn/ui components
-├── lib/                   # Utilities and form config
-├── registry/              # Component registry (source)
-│   └── new-york/
+├── lib/                   # Shared utilities
+├── registry/              # Component registry (source of truth)
+│   ├── form-builder/      # Form builder components
+│   └── inline-edit/       # Inline edit component
 ├── public/
 │   └── r/                 # Generated registry JSON files
 └── registry.json         # Registry entry point

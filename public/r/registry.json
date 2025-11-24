@@ -18,7 +18,7 @@
       ],
       "files": [
         {
-          "path": "registry/new-york/inline-edit/inline-edit.tsx",
+          "path": "registry/inline-edit/inline-edit.tsx",
           "type": "registry:component"
         }
       ]
@@ -58,51 +58,51 @@
       ],
       "files": [
         {
-          "path": "registry/new-york/form-builder/lib/form-config.ts",
+          "path": "registry/form-builder/lib/form-config.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/new-york/form-builder/lib/form-utils.ts",
+          "path": "registry/form-builder/lib/form-utils.ts",
           "type": "registry:lib"
         },
         {
-          "path": "registry/new-york/form-builder/hooks/use-form-builder.ts",
+          "path": "registry/form-builder/hooks/use-form-builder.ts",
           "type": "registry:hook"
         },
         {
-          "path": "registry/new-york/form-builder/components/field-editor.tsx",
+          "path": "registry/form-builder/components/field-editor.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/components/field-preview.tsx",
+          "path": "registry/form-builder/components/field-preview.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/components/field-toolbox.tsx",
+          "path": "registry/form-builder/components/field-toolbox.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/components/floating-controls.tsx",
+          "path": "registry/form-builder/components/floating-controls.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/components/option-list.tsx",
+          "path": "registry/form-builder/components/option-list.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/components/sortable-field.tsx",
+          "path": "registry/form-builder/components/sortable-field.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/form-builder.tsx",
+          "path": "registry/form-builder/form-builder.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/form-renderer.tsx",
+          "path": "registry/form-builder/form-renderer.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/form-builder/index.ts",
+          "path": "registry/form-builder/index.ts",
           "type": "registry:component"
         }
       ]

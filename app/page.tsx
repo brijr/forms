@@ -1,4 +1,4 @@
-import { FormBuilder } from "@/components/forms/form-builder";
+import { FormBuilder } from "@/registry/form-builder";
 import { SiteNav } from "@/components/site-nav";
 
 export default function Home() {
