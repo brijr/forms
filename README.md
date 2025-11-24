@@ -4,6 +4,14 @@ Website: [forms.bridger.to](https://forms.bridger.to)
 
 A powerful form builder built with Next.js, React, and shadcn/ui. This project features a drag-and-drop form builder component and a shareable component registry for seamless reuse.
 
+## Quick Install
+
+```bash
+npx shadcn@latest add https://forms.bridger.to/r/inline-edit.json https://forms.bridger.to/r/form-builder.json
+```
+
+---
+
 ## Features
 
 - 🎨 **Visual Form Builder** – Intuitive drag-and-drop UI for designing forms
