@@ -6,7 +6,8 @@
       "Bash(pnpm run lint)",
       "Bash(pnpm run dev)",
       "WebFetch(domain:ui.shadcn.com)",
-      "Bash(pnpm run registry:build:*)"
+      "Bash(pnpm run registry:build:*)",
+      "Bash(pnpm run build:*)"
     ],
     "deny": [],
     "ask": []
