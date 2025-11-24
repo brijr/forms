@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
+import Logo from "@/public/logo.svg";
 import {
   DndContext,
   closestCenter,
@@ -18,7 +20,11 @@ import {
 } from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   PlusIcon,
   TypeIcon,
@@ -32,6 +38,8 @@ import {
   SquareCheckIcon,
   ToggleRightIcon,
   SlidersHorizontalIcon,
+  Upload,
+  Download,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { FormConfig, FieldType, FieldConfig } from "@/lib/form-config";
@@ -195,6 +203,15 @@ export function FormBuilder() {
       <div className="border-b px-6 py-4 bg-background">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 w-full">
           <div className="flex items-center gap-3">
+            <Image
+              src={Logo}
+              alt="Logo"
+              width={12}
+              className="invert dark:invert-0"
+            />
+            <span className="text-sm font-medium">brijr/forms</span>
+          </div>
+          <div className="flex items-center gap-3">
             <div className="flex bg-muted/50 p-1 rounded-md">
               <Button
                 variant={viewMode === "builder" ? "default" : "ghost"}
@@ -221,24 +238,38 @@ export function FormBuilder() {
                 JSON
               </Button>
             </div>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleImport}
-              className="h-9"
-            >
-              Import
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleExport}
-              className="h-9"
-            >
-              Export
-            </Button>
+            <div className="flex gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handleImport}
+                    className="h-9 w-9"
+                  >
+                    <Upload className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Import</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handleExport}
+                    className="h-9 w-9"
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Export</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -286,15 +317,18 @@ export function FormBuilder() {
                     onChange={(e) =>
                       setFormConfig({ ...formConfig, title: e.target.value })
                     }
-                    className="text-base border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
+                    className="text-lg border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
                     placeholder="Form Title"
                   />
                   <Input
                     value={formConfig.description || ""}
                     onChange={(e) =>
-                      setFormConfig({ ...formConfig, description: e.target.value })
+                      setFormConfig({
+                        ...formConfig,
+                        description: e.target.value,
+                      })
                     }
-                    className="text-base text-muted-foreground border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
+                    className="text-lg text-muted-foreground border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
                     placeholder="Form description (optional)"
                   />
                 </div>

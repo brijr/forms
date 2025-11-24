@@ -1,5 +1,19 @@
 import { z } from "zod";
-import type { FieldConfig, FormConfig, ValidationRule } from "./form-config";
+import type { FieldConfig, FormConfig, ValidationRule, FieldType } from "./form-config";
+import {
+  Type,
+  Mail,
+  Phone,
+  Hash,
+  AlignLeft,
+  ChevronDownCircle,
+  CheckSquare,
+  CircleDot,
+  SquareCheck,
+  ToggleRight,
+  SlidersHorizontal,
+  LucideIcon,
+} from "lucide-react";
 
 /**
  * Generates a Zod schema for a single field based on its configuration
@@ -276,4 +290,50 @@ export function parseFormConfig(jsonString: string): FormConfig | null {
     console.error("Failed to parse form config:", e);
     return null;
   }
+}
+
+/**
+ * Returns the icon component for a given field type
+ */
+export function getFieldTypeIcon(type: FieldType): LucideIcon {
+  const iconMap: Record<FieldType, LucideIcon> = {
+    text: Type,
+    email: Mail,
+    phone: Phone,
+    number: Hash,
+    textarea: AlignLeft,
+    select: ChevronDownCircle,
+    "checkbox-group": CheckSquare,
+    radio: CircleDot,
+    "yes-no": CircleDot,
+    checkbox: SquareCheck,
+    switch: ToggleRight,
+    slider: SlidersHorizontal,
+  };
+  return iconMap[type] || Type;
+}
+
+/**
+ * Checks if a field type supports options
+ */
+export function hasOptions(type: FieldType): type is "select" | "checkbox-group" | "radio" {
+  return type === "select" || type === "checkbox-group" || type === "radio";
+}
+
+/**
+ * Checks if a field type supports placeholder
+ */
+export function supportsPlaceholder(
+  type: FieldType
+): type is "text" | "email" | "phone" | "number" | "textarea" {
+  return ["text", "email", "phone", "number", "textarea"].includes(type);
+}
+
+/**
+ * Checks if a field type supports required validation
+ */
+export function supportsRequired(
+  type: FieldType
+): type is "text" | "email" | "phone" | "number" | "textarea" {
+  return ["text", "email", "phone", "number", "textarea"].includes(type);
 }

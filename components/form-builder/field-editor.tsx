@@ -1,22 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { XIcon } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import type { FieldConfig } from "@/lib/form-config";
 
 interface FieldEditorProps {
   field: FieldConfig;
   onUpdate: (field: FieldConfig) => void;
   onClose: () => void;
+  open: boolean;
 }
 
-export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
+export function FieldEditor({ field, onUpdate, onClose, open }: FieldEditorProps) {
   const [localField, setLocalField] = useState(field);
+
+  // Update local field when prop changes
+  useEffect(() => {
+    setLocalField(field);
+  }, [field]);
 
   const handleUpdate = (updates: Partial<FieldConfig>) => {
     const updated = { ...localField, ...updates } as FieldConfig;
@@ -44,18 +55,11 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
     localField.type === "textarea";
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-base font-semibold">Validation Settings</h3>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onClose}
-          className="h-8 w-8"
-        >
-          <XIcon className="h-4 w-4" />
-        </Button>
-      </div>
+    <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Validation Settings</DialogTitle>
+        </DialogHeader>
 
       <FieldGroup className="space-y-4 pt-2">
         {supportsLength && (
@@ -169,6 +173,7 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
           />
         </Field>
       </FieldGroup>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

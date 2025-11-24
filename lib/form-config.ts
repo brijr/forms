@@ -266,7 +266,7 @@ export function createDefaultField(type: FieldType, index: number): FieldConfig 
 export function createEmptyForm(): FormConfig {
   return {
     id: `form_${Date.now()}`,
-    title: "New Form",
+    title: "",
     description: "",
     fields: [],
   }

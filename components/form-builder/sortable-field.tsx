@@ -2,46 +2,27 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { FieldConfig, FieldOption } from "@/lib/form-config";
-import { Button } from "@/components/ui/button";
 import {
-  GripVertical,
-  Trash2,
-  Copy,
-  Settings2,
-  Plus,
-  X,
-  Type,
-  Mail,
-  Phone,
-  Hash,
-  AlignLeft,
-  ChevronDownCircle,
-  CheckSquare,
-  CircleDot,
-  SquareCheck,
-  ToggleRight,
-  SlidersHorizontal,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+  FieldConfig,
+  SelectFieldConfig,
+  CheckboxGroupFieldConfig,
+  RadioFieldConfig,
+} from "@/lib/form-config";
+import { GripVertical } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Switch } from "@/components/ui/switch";
-import { Slider } from "@/components/ui/slider";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { InlineEdit } from "@/components/ui/inline-edit";
 import { useState } from "react";
 import { FieldEditor } from "./field-editor";
-import { InlineEdit } from "@/components/ui/inline-edit";
+import { FieldPreview } from "./field-preview";
+import { FieldHeader } from "./field-header";
+import { FieldActions } from "./field-actions";
+import {
+  supportsPlaceholder,
+  supportsRequired,
+  hasOptions,
+} from "@/lib/form-utils";
 
 interface SortableFieldProps {
   field: FieldConfig;
@@ -54,7 +35,6 @@ interface SortableFieldProps {
 
 export function SortableField({
   field,
-  isSelected,
   onSelect,
   onDelete,
   onDuplicate,
@@ -77,255 +57,59 @@ export function SortableField({
   };
 
   const handleOptionUpdate = (index: number, val: string) => {
-    if ("options" in field) {
-      const newOptions = [...field.options];
-      newOptions[index] = { ...newOptions[index], label: val, value: val }; // Simplifying: value = label for inline edit
-      onUpdate({ ...field, options: newOptions });
+    if (hasOptions(field.type)) {
+      const fieldWithOptions = field as
+        | SelectFieldConfig
+        | CheckboxGroupFieldConfig
+        | RadioFieldConfig;
+      const newOptions = [...fieldWithOptions.options];
+      newOptions[index] = { ...newOptions[index], label: val, value: val };
+      onUpdate({ ...fieldWithOptions, options: newOptions });
     }
   };
 
   const handleAddOption = () => {
-    if ("options" in field) {
+    if (hasOptions(field.type)) {
+      const fieldWithOptions = field as
+        | SelectFieldConfig
+        | CheckboxGroupFieldConfig
+        | RadioFieldConfig;
       const newOptions = [
-        ...field.options,
+        ...fieldWithOptions.options,
         {
-          label: `Option ${field.options.length + 1}`,
-          value: `option${field.options.length + 1}`,
+          label: `Option ${fieldWithOptions.options.length + 1}`,
+          value: `option${fieldWithOptions.options.length + 1}`,
         },
       ];
-      onUpdate({ ...field, options: newOptions });
+      onUpdate({ ...fieldWithOptions, options: newOptions });
     }
   };
 
   const handleRemoveOption = (index: number) => {
-    if ("options" in field && field.options.length > 1) {
-      const newOptions = field.options.filter((_, i) => i !== index);
-      onUpdate({ ...field, options: newOptions });
+    if (hasOptions(field.type)) {
+      const fieldWithOptions = field as
+        | SelectFieldConfig
+        | CheckboxGroupFieldConfig
+        | RadioFieldConfig;
+      if (fieldWithOptions.options.length > 1) {
+        const newOptions = fieldWithOptions.options.filter(
+          (_, i: number) => i !== index
+        );
+        onUpdate({ ...fieldWithOptions, options: newOptions });
+      }
     }
   };
 
-  const getFieldTypeIcon = () => {
-    switch (field.type) {
-      case "text":
-        return Type;
-      case "email":
-        return Mail;
-      case "phone":
-        return Phone;
-      case "number":
-        return Hash;
-      case "textarea":
-        return AlignLeft;
-      case "select":
-        return ChevronDownCircle;
-      case "checkbox-group":
-        return CheckSquare;
-      case "radio":
-        return CircleDot;
-      case "yes-no":
-        return CircleDot;
-      case "checkbox":
-        return SquareCheck;
-      case "switch":
-        return ToggleRight;
-      case "slider":
-        return SlidersHorizontal;
-      default:
-        return Type;
-    }
+  const handleLabelUpdate = (val: string) => {
+    onUpdate({ ...field, label: val });
   };
 
-  const FieldTypeIcon = getFieldTypeIcon();
+  const handleDescriptionUpdate = (val: string) => {
+    onUpdate({ ...field, description: val });
+  };
 
-  const renderFieldPreview = () => {
-    switch (field.type) {
-      case "text":
-      case "email":
-      case "phone":
-      case "number":
-        return (
-          <Input
-            disabled
-            type={field.type === "phone" ? "tel" : field.type}
-            className="cursor-pointer bg-muted/20"
-          />
-        );
-      case "textarea":
-        return (
-          <Textarea
-            disabled
-            className="cursor-pointer bg-muted/20"
-            rows={field.rows}
-          />
-        );
-      case "select":
-        // For inline editing, we'll show a list of editable options instead of the dropdown
-        // The dropdown is good for preview, but bad for editing.
-        // Let's show "Select Options:" followed by editable list.
-        return (
-          <div className="space-y-2">
-            {field.options.map((opt, idx) => (
-              <div key={idx} className="flex items-center gap-2 group/option">
-                <span className="text-sm text-muted-foreground w-4 text-center">
-                  {idx + 1}.
-                </span>
-                <InlineEdit
-                  value={opt.label}
-                  onSave={(val) => handleOptionUpdate(idx, val)}
-                  className="flex-1 text-base"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 opacity-0 group-hover/option:opacity-100 text-muted-foreground hover:text-destructive"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveOption(idx);
-                  }}
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </div>
-            ))}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddOption();
-              }}
-              className="h-7 text-xs text-muted-foreground"
-            >
-              <Plus className="h-3 w-3 mr-1" /> Add Option
-            </Button>
-          </div>
-        );
-      case "checkbox-group":
-        return (
-          <div className="space-y-2">
-            {field.options.map((opt, idx) => (
-              <div key={idx} className="flex items-center gap-2 group/option">
-                <Checkbox disabled id={`${field.id}-${idx}`} />
-                <InlineEdit
-                  value={opt.label}
-                  onSave={(val) => handleOptionUpdate(idx, val)}
-                  className="flex-1 text-base"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 opacity-0 group-hover/option:opacity-100 text-muted-foreground hover:text-destructive"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveOption(idx);
-                  }}
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </div>
-            ))}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddOption();
-              }}
-              className="h-7 text-xs text-muted-foreground"
-            >
-              <Plus className="h-3 w-3 mr-1" /> Add Option
-            </Button>
-          </div>
-        );
-      case "radio":
-        return (
-          <RadioGroup disabled>
-            <div className="space-y-2">
-              {field.options.map((opt, idx) => (
-                <div key={idx} className="flex items-center gap-2 group/option">
-                  <RadioGroupItem value={opt.value} id={`${field.id}-${idx}`} />
-                  <InlineEdit
-                    value={opt.label}
-                    onSave={(val) => handleOptionUpdate(idx, val)}
-                    className="flex-1 text-base"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 opacity-0 group-hover/option:opacity-100 text-muted-foreground hover:text-destructive"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRemoveOption(idx);
-                    }}
-                  >
-                    <X className="h-3 w-3" />
-                  </Button>
-                </div>
-              ))}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleAddOption();
-                }}
-                className="h-7 text-xs text-muted-foreground"
-              >
-                <Plus className="h-3 w-3 mr-1" /> Add Option
-              </Button>
-            </div>
-          </RadioGroup>
-        );
-      case "yes-no":
-        return (
-          <div className="flex gap-2">
-            <Button variant="outline" disabled className="flex-1 py-6">
-              Yes
-            </Button>
-            <Button variant="outline" disabled className="flex-1 py-6">
-              No
-            </Button>
-          </div>
-        );
-      case "checkbox":
-        return (
-          <div className="flex items-center space-x-2">
-            <Checkbox disabled id={field.id} />
-            <InlineEdit
-              value={field.label}
-              onSave={(val) => onUpdate({ ...field, label: val })}
-              placeholder="Checkbox label"
-            />
-          </div>
-        );
-      case "switch":
-        return (
-          <div className="flex items-center justify-between">
-            <Label htmlFor={field.id} className="text-muted-foreground">
-              (Switch Label above)
-            </Label>
-            <Switch disabled id={field.id} />
-          </div>
-        );
-      case "slider":
-        return (
-          <div className="space-y-2">
-            <Slider
-              disabled
-              min={field.min}
-              max={field.max}
-              step={field.step}
-              defaultValue={[field.defaultValue as number]}
-            />
-            <div className="flex justify-between text-xs text-muted-foreground px-1">
-              <span>{field.min}</span>
-              <span>{field.max}</span>
-            </div>
-          </div>
-        );
-      default:
-        return <div>Unsupported field type</div>;
-    }
+  const handlePlaceholderUpdate = (val: string) => {
+    onUpdate({ ...field, placeholder: val });
   };
 
   if (isDragging) {
@@ -335,24 +119,6 @@ export function SortableField({
         style={style}
         className="opacity-50 h-24 border-2 border-dashed border-primary/50 rounded-md bg-muted/50"
       />
-    );
-  }
-
-  if (isEditing) {
-    return (
-      <div
-        ref={setNodeRef}
-        style={style}
-        className={cn(
-          "relative group p-4 border rounded-lg bg-background shadow-lg ring-1 ring-primary/20"
-        )}
-      >
-        <FieldEditor
-          field={field}
-          onUpdate={onUpdate}
-          onClose={() => setIsEditing(false)}
-        />
-      </div>
     );
   }
 
@@ -373,79 +139,38 @@ export function SortableField({
           ref={setNodeRef}
           style={style}
           onClick={() => onSelect()}
-          className={cn(
-            "relative group flex items-start gap-3 px-4 pb-4 flex-1"
-          )}
+          className="relative group flex items-start gap-3 px-4 pb-4 flex-1"
         >
           {/* Content */}
           <div className="flex-1 space-y-3">
-            {field.type !== "checkbox" && field.type !== "switch" && (
-              <div className="space-y-1">
-                <div className="flex items-center justify-between gap-2">
-                  <InlineEdit
-                    value={field.label}
-                    onSave={(val) => onUpdate({ ...field, label: val })}
-                    className="font-medium text-base text-foreground"
-                    placeholder="Field Label"
-                  />
-                  {/* Field Type Icon */}
-                  <div
-                    className="flex items-center gap-2 text-muted-foreground/60"
-                    title={field.type}
-                  >
-                    <FieldTypeIcon className="h-4 w-4" />
-                    <span className="text-[10px] uppercase">{field.type}</span>
-                  </div>
-                </div>
-
-                <InlineEdit
-                  value={field.description || ""}
-                  onSave={(val) => onUpdate({ ...field, description: val })}
-                  className="text-muted-foreground"
-                  placeholder="Description"
-                />
-              </div>
-            )}
-            {(field.type === "checkbox" || field.type === "switch") && (
-              <div className="flex items-center justify-end gap-2">
-                {/* Field Type Icon */}
-                <div
-                  className="flex items-center gap-2 text-muted-foreground/60"
-                  title={field.type}
-                >
-                  <FieldTypeIcon className="h-4 w-4" />
-                  <span className="text-[10px] uppercase">{field.type}</span>
-                </div>
-              </div>
-            )}
+            <FieldHeader
+              field={field}
+              onLabelUpdate={handleLabelUpdate}
+              onDescriptionUpdate={handleDescriptionUpdate}
+            />
 
             {/* Render Preview */}
             <div className="relative">
-              {" "}
-              {/* Removed pointer-events-none to allow interaction with inline edits */}
-              {renderFieldPreview()}
-              {/* Inline Placeholder Edit (only for inputs) */}
-              {(field.type === "text" ||
-                field.type === "email" ||
-                field.type === "phone" ||
-                field.type === "number") && (
-                <div className="absolute left-3 top-0 h-9 flex items-center pointer-events-none">
+              <FieldPreview
+                field={field}
+                onOptionUpdate={handleOptionUpdate}
+                onAddOption={handleAddOption}
+                onRemoveOption={handleRemoveOption}
+                onLabelUpdate={handleLabelUpdate}
+              />
+              {/* Inline Placeholder Edit */}
+              {supportsPlaceholder(field.type) && (
+                <div
+                  className={`absolute left-3 pointer-events-none ${
+                    field.type === "textarea"
+                      ? "top-2"
+                      : "top-0 h-9 flex items-center"
+                  }`}
+                >
                   <div className="pointer-events-auto">
                     <InlineEdit
                       value={field.placeholder || ""}
-                      onSave={(val) => onUpdate({ ...field, placeholder: val })}
-                      className="text-muted-foreground font-normal"
-                      placeholder="Placeholder"
-                    />
-                  </div>
-                </div>
-              )}
-              {field.type === "textarea" && (
-                <div className="absolute left-3 top-2 pointer-events-none">
-                  <div className="pointer-events-auto">
-                    <InlineEdit
-                      value={field.placeholder || ""}
-                      onSave={(val) => onUpdate({ ...field, placeholder: val })}
+                      onSave={handlePlaceholderUpdate}
                       className="text-muted-foreground font-normal"
                       placeholder="Placeholder"
                     />
@@ -454,12 +179,8 @@ export function SortableField({
               )}
             </div>
 
-            {/* Required Checkbox - Below Placeholder */}
-            {(field.type === "text" ||
-              field.type === "email" ||
-              field.type === "phone" ||
-              field.type === "number" ||
-              field.type === "textarea") && (
+            {/* Required Checkbox */}
+            {supportsRequired(field.type) && (
               <div
                 className="flex items-center gap-1.5"
                 onClick={(e) => e.stopPropagation()}
@@ -489,49 +210,24 @@ export function SortableField({
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-primary"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsEditing(true);
-            }}
-            title="Validation Settings"
-          >
-            <Settings2 className="h-4 w-4" />
-          </Button>
-          {onDuplicate && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDuplicate(e);
-              }}
-              title="Duplicate"
-            >
-              <Copy className="h-4 w-4" />
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-destructive"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(e);
-            }}
-            title="Delete"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
+        <FieldActions
+          onSettingsClick={(e) => {
+            e.stopPropagation();
+            setIsEditing(true);
+          }}
+          onDuplicate={onDuplicate}
+          onDelete={onDelete}
+        />
       </div>
       {/* Separator */}
       <Separator className="mt-4" />
+      {/* Validation Settings Dialog */}
+      <FieldEditor
+        field={field}
+        onUpdate={onUpdate}
+        onClose={() => setIsEditing(false)}
+        open={isEditing}
+      />
     </div>
   );
 }
