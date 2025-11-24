@@ -4,9 +4,9 @@ import { useState } from "react";
 import { arrayMove } from "@dnd-kit/sortable";
 import { DragEndEvent } from "@dnd-kit/core";
 import { toast } from "sonner";
-import type { FormConfig, FieldType, FieldConfig } from "../lib/form-config";
-import { createDefaultField, createEmptyForm } from "../lib/form-config";
-import { downloadFormConfig, parseFormConfig } from "../lib/form-utils";
+import type { FormConfig, FieldType, FieldConfig } from "@/lib/form-builder/form-config";
+import { createDefaultField, createEmptyForm } from "@/lib/form-builder/form-config";
+import { downloadFormConfig, parseFormConfig } from "@/lib/form-builder/form-utils";
 
 export type ViewMode = "builder" | "preview" | "json";
 

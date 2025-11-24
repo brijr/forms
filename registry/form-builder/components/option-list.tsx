@@ -1,6 +1,6 @@
 "use client";
 
-import { FieldOption } from "../lib/form-config";
+import { FieldOption } from "@/lib/form-builder/form-config";
 import { Button } from "@/components/ui/button";
 import { InlineEdit } from "@/components/ui/inline-edit";
 import { Plus, X } from "lucide-react";

@@ -21,11 +21,11 @@ import {
 } from "@/components/ui/sidebar";
 import { MousePointerClick } from "lucide-react";
 import { toast } from "sonner";
-import { useFormBuilder } from "./hooks/use-form-builder";
+import { useFormBuilder } from "@/hooks/form-builder/use-form-builder";
 import { FormRenderer } from "./form-renderer";
-import { SortableField } from "./components/sortable-field";
-import { FloatingControls } from "./components/floating-controls";
-import { FieldToolbox } from "./components/field-toolbox";
+import { SortableField } from "./sortable-field";
+import { FloatingControls } from "./floating-controls";
+import { FieldToolbox } from "./field-toolbox";
 
 export function FormBuilder() {
   const {

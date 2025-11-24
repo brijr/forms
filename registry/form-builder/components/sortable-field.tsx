@@ -29,12 +29,12 @@ import {
   CheckboxGroupFieldConfig,
   RadioFieldConfig,
   FIELD_TYPES,
-} from "../lib/form-config";
+} from "@/lib/form-builder/form-config";
 import {
   supportsPlaceholder,
   supportsRequired,
   hasOptions,
-} from "../lib/form-utils";
+} from "@/lib/form-builder/form-utils";
 import { cn } from "@/lib/utils";
 
 interface SortableFieldProps {

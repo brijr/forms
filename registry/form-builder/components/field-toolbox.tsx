@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { FIELD_TYPES, CATEGORIES, FieldType } from "../lib/form-config";
+import { FIELD_TYPES, CATEGORIES, FieldType } from "@/lib/form-builder/form-config";
 
 interface FieldToolboxProps {
   onAddField: (type: FieldType) => void;

@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { FieldConfig } from "../lib/form-config";
+import type { FieldConfig } from "@/lib/form-builder/form-config";
 
 interface FieldEditorProps {
   field: FieldConfig;
