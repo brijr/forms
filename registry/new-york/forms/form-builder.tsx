@@ -41,9 +41,9 @@ import {
   Download,
 } from "lucide-react";
 import { toast } from "sonner";
-import type { FormConfig, FieldType, FieldConfig } from "../lib/form-config";
-import { createDefaultField, createEmptyForm } from "../lib/form-config";
-import { downloadFormConfig, parseFormConfig } from "../lib/form-utils";
+import type { FormConfig, FieldType, FieldConfig } from "./lib/form-config";
+import { createDefaultField, createEmptyForm } from "./lib/form-config";
+import { downloadFormConfig, parseFormConfig } from "./lib/form-utils";
 import { FormRenderer } from "./form-renderer";
 import { SortableField } from "./components/sortable-field";
 
