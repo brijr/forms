@@ -286,44 +286,63 @@ export function SortableField({
   }
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      onClick={() => onSelect()}
-      className={cn(
-        "relative group flex items-start gap-3 p-4 border rounded-lg bg-background transition-all hover:shadow-sm",
-        isSelected ? "border-primary/50 ring-1 ring-primary/20" : "border-border hover:border-primary/30"
-      )}
-    >
+    <div className="flex items-start gap-2">
       {/* Drag Handle */}
       <div
         {...attributes}
         {...listeners}
-        className="mt-1 -ml-1 p-1 cursor-grab active:cursor-grabbing text-muted-foreground/30 hover:text-foreground transition-colors"
+        className="mt-1 p-1 cursor-grab active:cursor-grabbing text-muted-foreground/30 hover:text-foreground transition-colors"
       >
         <GripVertical className="h-5 w-5" />
       </div>
 
-      {/* Content */}
-      <div className="flex-1 space-y-3">
+      {/* Field Box */}
+      <div
+        ref={setNodeRef}
+        style={style}
+        onClick={() => onSelect()}
+        className={cn(
+          "relative group flex items-start gap-3 p-4 border rounded-lg bg-background transition-all hover:shadow-sm border-border flex-1"
+        )}
+      >
+        {/* Content */}
+        <div className="flex-1 space-y-3 pr-4">
         {field.type !== "checkbox" && field.type !== "switch" && (
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between">
                  <InlineEdit
                     value={field.label}
                     onSave={(val) => onUpdate({ ...field, label: val })}
                     className="font-medium text-base text-foreground"
                     placeholder="Field Label"
                 />
-                {field.validation?.required && (
-                    <span className="text-destructive text-sm">*</span>
-                )}
+                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                  <Checkbox
+                    id={`${field.id}-required`}
+                    checked={field.validation?.required ?? false}
+                    onCheckedChange={(checked) =>
+                      onUpdate({
+                        ...field,
+                        validation: {
+                          ...field.validation,
+                          required: checked === true,
+                        },
+                      })
+                    }
+                  />
+                  <Label
+                    htmlFor={`${field.id}-required`}
+                    className="text-[10px] font-normal cursor-pointer"
+                  >
+                    Required
+                  </Label>
+                </div>
             </div>
 
              <InlineEdit
                 value={field.description || ""}
                 onSave={(val) => onUpdate({ ...field, description: val })}
-                className="text-base text-muted-foreground"
+                className="text-sm text-muted-foreground"
                 placeholder="Description (optional)"
             />
           </div>
@@ -339,7 +358,7 @@ export function SortableField({
                         <InlineEdit
                             value={field.placeholder || ""}
                             onSave={(val) => onUpdate({ ...field, placeholder: val })}
-                            className="text-base text-muted-foreground font-normal"
+                            className="text-sm text-muted-foreground font-normal"
                             placeholder="Placeholder text..."
                         />
                     </div>
@@ -351,7 +370,7 @@ export function SortableField({
                         <InlineEdit
                             value={field.placeholder || ""}
                             onSave={(val) => onUpdate({ ...field, placeholder: val })}
-                            className="text-base text-muted-foreground font-normal"
+                            className="text-sm text-muted-foreground font-normal"
                             placeholder="Placeholder text..."
                         />
                     </div>
@@ -361,7 +380,7 @@ export function SortableField({
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex flex-col gap-1">
         <Button
             variant="ghost"
             size="icon"
@@ -400,6 +419,7 @@ export function SortableField({
         >
           <Trash2 className="h-4 w-4" />
         </Button>
+      </div>
       </div>
     </div>
   );

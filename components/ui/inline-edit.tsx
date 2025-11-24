@@ -61,7 +61,7 @@ export function InlineEdit({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           className={cn(
-            "border-none shadow-none px-1 -mx-1 focus-visible:ring-0 bg-transparent resize-none min-h-[1.5em] py-0 w-full text-base",
+            "border-none shadow-none px-1 -mx-1 focus-visible:ring-0 bg-transparent resize-none min-h-[1.5em] py-0 w-full leading-[inherit]",
             className
           )}
           rows={2}
@@ -77,7 +77,7 @@ export function InlineEdit({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         className={cn(
-          "border-none shadow-none px-1 -mx-1 focus-visible:ring-0 h-auto bg-transparent py-0 min-h-[1.5em] w-full text-base",
+          "border-none shadow-none px-1 -mx-1 focus-visible:ring-0 h-auto bg-transparent py-0 min-h-[1.5em] w-full leading-[inherit]",
           className
         )}
       />
@@ -91,8 +91,8 @@ export function InlineEdit({
         setIsEditing(true);
       }}
       className={cn(
-        "cursor-text hover:bg-muted/50 rounded px-1 -mx-1 transition-colors min-h-[1.5em] text-base",
-        !value && "text-muted-foreground italic",
+        "cursor-text hover:bg-muted/50 rounded px-1 -mx-1 transition-colors min-h-[1.5em] leading-[inherit]",
+        !value && "text-muted-foreground",
         className
       )}
     >

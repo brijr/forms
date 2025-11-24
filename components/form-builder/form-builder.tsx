@@ -278,7 +278,7 @@ export function FormBuilder() {
                           key={item.type}
                           variant="outline"
                           size="sm"
-                          className="flex flex-col items-center justify-center h-16 gap-1 hover:border-primary hover:text-primary transition-all shadow-sm"
+                          className="flex flex-col items-center justify-center h-16 gap-1 hover:border-primary hover:text-primary transition-all"
                           onClick={() => handleAddField(item.type)}
                         >
                           <item.icon className="h-5 w-5" />

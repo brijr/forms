@@ -58,22 +58,6 @@ export function FieldEditor({ field, onUpdate, onClose }: FieldEditorProps) {
       </div>
 
       <FieldGroup className="space-y-4 pt-2">
-        <div className="flex items-center space-x-2 border p-3 rounded-md">
-          <Checkbox
-            id="field-required"
-            checked={localField.validation?.required ?? false}
-            onCheckedChange={(checked) =>
-              handleValidationUpdate({ required: checked === true })
-            }
-          />
-          <label
-            htmlFor="field-required"
-            className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Required Field
-          </label>
-        </div>
-
         {supportsLength && (
           <div className="grid grid-cols-2 gap-4">
             <Field>
