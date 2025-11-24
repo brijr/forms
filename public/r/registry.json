@@ -40,7 +40,6 @@
         "slider",
         "field",
         "dialog",
-        "tooltip",
         "label",
         "dropdown-menu",
         "sidebar"
@@ -71,15 +70,7 @@
           "type": "registry:hook"
         },
         {
-          "path": "registry/new-york/forms/components/field-actions.tsx",
-          "type": "registry:component"
-        },
-        {
           "path": "registry/new-york/forms/components/field-editor.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/new-york/forms/components/field-header.tsx",
           "type": "registry:component"
         },
         {
