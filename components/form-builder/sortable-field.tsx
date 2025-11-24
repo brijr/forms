@@ -286,12 +286,12 @@ export function SortableField({
   }
 
   return (
-    <div className="flex items-start gap-2">
+    <div className="flex items-center gap-2">
       {/* Drag Handle */}
       <div
         {...attributes}
         {...listeners}
-        className="mt-1 p-1 cursor-grab active:cursor-grabbing text-muted-foreground/30 hover:text-foreground transition-colors"
+        className="p-1 cursor-grab active:cursor-grabbing text-muted-foreground/30 hover:text-foreground transition-colors"
       >
         <GripVertical className="h-5 w-5" />
       </div>
@@ -306,7 +306,7 @@ export function SortableField({
         )}
       >
         {/* Content */}
-        <div className="flex-1 space-y-3 pr-4">
+        <div className="flex-1 space-y-3">
         {field.type !== "checkbox" && field.type !== "switch" && (
           <div className="space-y-1">
             <div className="flex items-center justify-between">
@@ -378,6 +378,7 @@ export function SortableField({
             )}
         </div>
       </div>
+      </div>
 
       {/* Actions */}
       <div className="flex flex-col gap-1">
@@ -419,7 +420,6 @@ export function SortableField({
         >
           <Trash2 className="h-4 w-4" />
         </Button>
-      </div>
       </div>
     </div>
   );
