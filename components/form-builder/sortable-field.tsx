@@ -132,7 +132,7 @@ export function SortableField({
           ref={setNodeRef}
           style={style}
           onClick={() => onSelect()}
-          className="relative group flex items-start gap-3 p-3 flex-1 border bg-muted/30 rounded h-full"
+          className="relative group flex items-start gap-3 p-4 flex-1 border bg-muted/10 rounded h-full"
         >
           {/* Content */}
           <div className="flex-1 space-y-3">
