@@ -1,36 +1,159 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Forms - Form Builder & Component Registry
+
+Website: [forms.bridger.to](https://forms.bridger.to)
+
+A powerful form builder built with Next.js, React, and shadcn/ui. This project features a drag-and-drop form builder component and a shareable component registry for seamless reuse.
+
+## Features
+
+- 🎨 **Visual Form Builder** – Intuitive drag-and-drop UI for designing forms
+- 📝 **Flexible Field Types** – Text, email, phone, number, textarea, select, radio, checkbox, switch, slider, and more
+- ✅ **Form Validation** – Built-in validation powered by Zod schemas
+- 🎯 **Component Registry** – Easily install components via the shadcn CLI
+- ⚡ **shadcn/ui Compatible** – Built on top of shadcn/ui for great design and flexibility
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+
+- pnpm (recommended), or npm/yarn
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Clone the repository
+git clone https://github.com/brijr/forms.git
+cd forms
+
+# Install dependencies
+pnpm install
+
+# Start the development server
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000) to use the form builder.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Component Registry
+
+This project provides a shadcn-compatible component registry for easy integration into other projects.
+
+### Available Components
+
+#### Inline Edit
+A click-to-edit component supporting both single-line and multiline inline editing.
+
+**Registry Dependencies:** `input`, `textarea`
+
+#### Form Builder
+A fully-featured form builder with drag-and-drop, field validation, and form rendering.
+
+**Registry Dependencies:** `inline-edit`, `button`, `input`, `textarea`, `select`, `checkbox`, `radio-group`, `switch`, `slider`, `field`, `dialog`, `tooltip`, `label`
+
+**NPM Dependencies:** `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`, `@tanstack/react-form`, `@tanstack/zod-form-adapter`, `zod`, `sonner`, `lucide-react`
+
+---
+
+### Building the Registry
+
+To generate the registry files:
+
+```bash
+pnpm run registry:build
+```
+
+This command creates JSON bundles in `public/r/` for use by the shadcn CLI.
+
+---
+
+### Installing Components
+
+#### Locally
+
+```bash
+# Install inline-edit
+npx shadcn@latest add http://localhost:3000/r/inline-edit.json
+
+# Install form-builder
+npx shadcn@latest add http://localhost:3000/r/form-builder.json
+```
+
+#### From the Website
+
+Once deployed, components can be installed from:
+
+```bash
+npx shadcn@latest add https://forms.bridger.to/r/inline-edit.json
+npx shadcn@latest add https://forms.bridger.to/r/form-builder.json
+```
+
+---
+
+### Registry Structure
+
+```
+registry/
+└── new-york/
+    ├── inline-edit/
+    │   └── inline-edit.tsx
+    └── form-builder/
+        ├── lib/
+        │   ├── form-config.ts
+        │   └── form-utils.ts
+        └── components/
+            ├── field-actions.tsx
+            ├── field-editor.tsx
+            ├── field-header.tsx
+            ├── field-preview.tsx
+            ├── form-builder.tsx
+            ├── form-renderer.tsx
+            ├── option-list.tsx
+            └── sortable-field.tsx
+```
+
+---
+
+## Project Structure
+
+```
+├── app/                    # Next.js app directory
+├── components/
+│   ├── form-builder/      # Form builder components (source)
+│   └── ui/                # shadcn/ui components
+├── lib/                   # Utilities and form config
+├── registry/              # Component registry (source)
+│   └── new-york/
+├── public/
+│   └── r/                 # Generated registry JSON files
+└── registry.json         # Registry entry point
+```
+
+---
+
+## Development
+
+### Scripts
+
+- `pnpm dev` – Start development server
+- `pnpm build` – Build for production
+- `pnpm start` – Run production server
+- `pnpm lint` – Run ESLint
+- `pnpm registry:build` – Build registry JSON files
+
+---
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js Documentation](https://nextjs.org/docs)
+- [shadcn/ui Documentation](https://ui.shadcn.com)
+- [shadcn Registry Guide](https://ui.shadcn.com/docs/registry)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
