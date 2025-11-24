@@ -2,6 +2,10 @@
 export { FormBuilder } from "./form-builder";
 export { FormRenderer } from "./form-renderer";
 
+// Export hook
+export { useFormBuilder } from "./hooks/use-form-builder";
+export type { ViewMode } from "./hooks/use-form-builder";
+
 // Export types
 export type {
   FormConfig,
@@ -19,11 +23,14 @@ export type {
   SwitchFieldConfig,
   SliderFieldConfig,
   YesNoFieldConfig,
+  FieldTypeConfig,
 } from "./lib/form-config";
 
 export {
   createDefaultField,
   createEmptyForm,
+  FIELD_TYPES,
+  CATEGORIES,
 } from "./lib/form-config";
 
 // Export JSON utilities

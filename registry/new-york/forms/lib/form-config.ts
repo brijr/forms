@@ -1,3 +1,18 @@
+import {
+  TypeIcon,
+  MailIcon,
+  PhoneIcon,
+  HashIcon,
+  AlignLeftIcon,
+  ChevronDownCircleIcon,
+  CheckSquareIcon,
+  CircleDotIcon,
+  SquareCheckIcon,
+  ToggleRightIcon,
+  SlidersHorizontalIcon,
+  LucideIcon,
+} from "lucide-react";
+
 // Field types supported by the form builder
 export type FieldType =
   | "text"
@@ -271,3 +286,31 @@ export function createEmptyForm(): FormConfig {
     fields: [],
   }
 }
+
+// Field type configuration for the toolbox
+export interface FieldTypeConfig {
+  type: FieldType;
+  label: string;
+  icon: LucideIcon;
+  category: "basic" | "choice";
+}
+
+export const FIELD_TYPES: FieldTypeConfig[] = [
+  { type: "text", label: "Text", icon: TypeIcon, category: "basic" },
+  { type: "email", label: "Email", icon: MailIcon, category: "basic" },
+  { type: "phone", label: "Phone", icon: PhoneIcon, category: "basic" },
+  { type: "number", label: "Number", icon: HashIcon, category: "basic" },
+  { type: "textarea", label: "Textarea", icon: AlignLeftIcon, category: "basic" },
+  { type: "select", label: "Select", icon: ChevronDownCircleIcon, category: "choice" },
+  { type: "radio", label: "Radio", icon: CircleDotIcon, category: "choice" },
+  { type: "yes-no", label: "Yes/No", icon: CircleDotIcon, category: "choice" },
+  { type: "checkbox-group", label: "Checkboxes", icon: CheckSquareIcon, category: "choice" },
+  { type: "checkbox", label: "Checkbox", icon: SquareCheckIcon, category: "choice" },
+  { type: "switch", label: "Switch", icon: ToggleRightIcon, category: "choice" },
+  { type: "slider", label: "Slider", icon: SlidersHorizontalIcon, category: "choice" },
+];
+
+export const CATEGORIES = [
+  { id: "basic", label: "Basic Fields" },
+  { id: "choice", label: "Selection & Choice" },
+] as const;

@@ -41,7 +41,9 @@
         "field",
         "dialog",
         "tooltip",
-        "label"
+        "label",
+        "dropdown-menu",
+        "sidebar"
       ],
       "dependencies": [
         "@dnd-kit/core@^6.3.1",
@@ -65,6 +67,10 @@
           "type": "registry:lib"
         },
         {
+          "path": "registry/new-york/forms/hooks/use-form-builder.ts",
+          "type": "registry:hook"
+        },
+        {
           "path": "registry/new-york/forms/components/field-actions.tsx",
           "type": "registry:component"
         },
@@ -81,11 +87,11 @@
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/forms/form-builder.tsx",
+          "path": "registry/new-york/forms/components/field-toolbox.tsx",
           "type": "registry:component"
         },
         {
-          "path": "registry/new-york/forms/form-renderer.tsx",
+          "path": "registry/new-york/forms/components/floating-controls.tsx",
           "type": "registry:component"
         },
         {
@@ -94,6 +100,14 @@
         },
         {
           "path": "registry/new-york/forms/components/sortable-field.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/new-york/forms/form-builder.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/new-york/forms/form-renderer.tsx",
           "type": "registry:component"
         },
         {
