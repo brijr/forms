@@ -201,7 +201,7 @@ export function FormBuilder() {
       <div className="flex flex-1 overflow-hidden relative">
         {/* Floating Controls */}
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3">
-          <div className="flex bg-background/95 backdrop-blur-sm rounded-lg">
+          <div className="flex bg-background/95 backdrop-blur-sm border rounded-lg p-1">
             <Button
               variant={viewMode === "builder" ? "default" : "ghost"}
               size="sm"
@@ -227,7 +227,7 @@ export function FormBuilder() {
               JSON
             </Button>
           </div>
-          <div className="flex gap-2 bg-background/95 backdrop-blur-sm border rounded-lg p-1">
+          <div className="flex gap-2">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="outline" size="icon" onClick={handleImport}>
