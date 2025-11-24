@@ -6,7 +6,6 @@ import { FieldPreview } from "./field-preview";
 import { FieldEditor } from "./field-editor";
 import { FieldHeader } from "./field-header";
 import { InlineEdit } from "@/components/ui/inline-edit";
-import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
