@@ -2,12 +2,14 @@
 export type FieldType =
   | "text"
   | "email"
+  | "phone"
   | "number"
   | "textarea"
   | "select"
   | "checkbox"
   | "checkbox-group"
   | "radio"
+  | "yes-no"
   | "switch"
   | "slider"
 
@@ -43,7 +45,7 @@ export interface BaseFieldConfig {
 
 // Text field specific config
 export interface TextFieldConfig extends BaseFieldConfig {
-  type: "text" | "email"
+  type: "text" | "email" | "phone"
 }
 
 // Number field specific config
@@ -98,6 +100,12 @@ export interface SliderFieldConfig extends BaseFieldConfig {
   defaultValue?: number
 }
 
+// Yes/No field specific config
+export interface YesNoFieldConfig extends BaseFieldConfig {
+  type: "yes-no"
+  defaultValue?: boolean
+}
+
 // Union type for all field configurations
 export type FieldConfig =
   | TextFieldConfig
@@ -107,6 +115,7 @@ export type FieldConfig =
   | CheckboxGroupFieldConfig
   | RadioFieldConfig
   | CheckboxFieldConfig
+  | YesNoFieldConfig
   | SwitchFieldConfig
   | SliderFieldConfig
 
@@ -135,25 +144,47 @@ export function createDefaultField(type: FieldType, index: number): FieldConfig 
     case "text":
       return {
         ...baseConfig,
+        label: "Text",
+        placeholder: "Enter text...",
         type: "text",
         defaultValue: "",
       }
     case "email":
       return {
         ...baseConfig,
+        id: baseId,
+        name: "email",
+        label: "Email",
         type: "email",
         defaultValue: "",
         validation: { email: true },
       }
+    case "phone":
+      return {
+        ...baseConfig,
+        id: baseId,
+        name: "phone",
+        label: "Phone Number",
+        type: "phone",
+        defaultValue: "",
+        validation: {
+          pattern: "^[\\+]?[0-9]{7,15}$",
+          custom: "Enter a valid phone number."
+        },
+      }
     case "number":
       return {
         ...baseConfig,
+        label: "Number",
+        placeholder: "Enter a number...",
         type: "number",
-        defaultValue: 0,
+        defaultValue: undefined,
       }
     case "textarea":
       return {
         ...baseConfig,
+        label: "Message",
+        placeholder: "Enter your message...",
         type: "textarea",
         rows: 4,
         defaultValue: "",
@@ -161,48 +192,61 @@ export function createDefaultField(type: FieldType, index: number): FieldConfig 
     case "select":
       return {
         ...baseConfig,
+        label: "Select",
         type: "select",
         options: [
-          { label: "Option 1", value: "option1" },
-          { label: "Option 2", value: "option2" },
+          { label: "First option", value: "first" },
+          { label: "Second option", value: "second" },
         ],
         defaultValue: "",
       }
     case "checkbox-group":
       return {
         ...baseConfig,
+        label: "Select all that apply",
         type: "checkbox-group",
         options: [
-          { label: "Option 1", value: "option1" },
-          { label: "Option 2", value: "option2" },
+          { label: "First option", value: "first" },
+          { label: "Second option", value: "second" },
         ],
         defaultValue: [],
       }
     case "radio":
       return {
         ...baseConfig,
+        label: "Choose one",
         type: "radio",
         options: [
-          { label: "Option 1", value: "option1" },
-          { label: "Option 2", value: "option2" },
+          { label: "First option", value: "first" },
+          { label: "Second option", value: "second" },
         ],
         defaultValue: "",
       }
     case "checkbox":
       return {
         ...baseConfig,
+        label: "I agree",
         type: "checkbox",
         defaultValue: false,
+      }
+    case "yes-no":
+      return {
+        ...baseConfig,
+        label: "Yes or No",
+        type: "yes-no",
+        defaultValue: undefined,
       }
     case "switch":
       return {
         ...baseConfig,
+        label: "Enable",
         type: "switch",
         defaultValue: false,
       }
     case "slider":
       return {
         ...baseConfig,
+        label: "Range",
         type: "slider",
         min: 0,
         max: 100,

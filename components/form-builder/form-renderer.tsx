@@ -2,6 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,17 +29,20 @@ import {
 } from "@/components/ui/field";
 import type { FormConfig, FieldConfig } from "@/lib/form-config";
 import { generateFormSchema, getDefaultValues } from "@/lib/form-utils";
+import { InlineEdit } from "@/components/ui/inline-edit";
 
 interface FormRendererProps {
   config: FormConfig;
   onSubmit?: (values: Record<string, unknown>) => void;
   showSubmitButton?: boolean;
+  onFieldUpdate?: (field: FieldConfig) => void;
 }
 
 export function FormRenderer({
   config,
   onSubmit,
   showSubmitButton = true,
+  onFieldUpdate,
 }: FormRendererProps) {
   const formSchema = generateFormSchema(config);
   const defaultValues = getDefaultValues(config);
@@ -59,10 +63,56 @@ export function FormRenderer({
     },
   });
 
+  const formatPhoneNumber = (value: string): string => {
+    if (!value) return "";
+
+    // Check if it's an international number (starts with +)
+    const hasPlus = value.startsWith("+");
+
+    // Extract digits and preserve the + if present
+    const digits = value.replace(/\D/g, "");
+    const plus = hasPlus ? "+" : "";
+
+    // If international (has + or more than 10 digits), format more flexibly
+    if (hasPlus || digits.length > 10) {
+      if (digits.length === 0) return plus;
+      // Group digits in chunks for international format
+      if (digits.length <= 3) return `${plus}${digits}`;
+      if (digits.length <= 6)
+        return `${plus}${digits.slice(0, 3)} ${digits.slice(3)}`;
+      if (digits.length <= 9)
+        return `${plus}${digits.slice(0, 3)} ${digits.slice(
+          3,
+          6
+        )} ${digits.slice(6)}`;
+      // For longer numbers, add spaces every 3-4 digits
+      let formatted = `${plus}${digits.slice(0, 3)} ${digits.slice(
+        3,
+        6
+      )} ${digits.slice(6, 9)}`;
+      if (digits.length > 9) {
+        formatted += ` ${digits.slice(9)}`;
+      }
+      return formatted;
+    }
+
+    // US format: (XXX) XXX-XXXX
+    if (digits.length === 0) return "";
+    // Handle US numbers that might start with 1
+    const usDigits =
+      digits.length === 11 && digits[0] === "1" ? digits.slice(1) : digits;
+    if (usDigits.length <= 3) return `(${usDigits}`;
+    if (usDigits.length <= 6)
+      return `(${usDigits.slice(0, 3)}) ${usDigits.slice(3)}`;
+    return `(${usDigits.slice(0, 3)}) ${usDigits.slice(3, 6)}-${usDigits.slice(
+      6,
+      10
+    )}`;
+  };
+
   const renderField = (fieldConfig: FieldConfig) => {
     switch (fieldConfig.type) {
       case "text":
-      case "email":
         return (
           <form.Field
             key={fieldConfig.id}
@@ -73,8 +123,27 @@ export function FormRenderer({
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>
-                    {fieldConfig.label}
+                  <FieldLabel
+                    htmlFor={onFieldUpdate ? undefined : field.name}
+                    onClick={(e) => {
+                      if (onFieldUpdate) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
+                    {onFieldUpdate ? (
+                      <InlineEdit
+                        value={fieldConfig.label}
+                        onSave={(val) =>
+                          onFieldUpdate({ ...fieldConfig, label: val })
+                        }
+                        className="font-medium"
+                        placeholder="Field Label"
+                      />
+                    ) : (
+                      fieldConfig.label
+                    )}
                   </FieldLabel>
                   <Input
                     id={field.name}
@@ -99,6 +168,135 @@ export function FormRenderer({
           />
         );
 
+      case "email":
+        return (
+          <form.Field
+            key={fieldConfig.id}
+            name={fieldConfig.name}
+            // eslint-disable-next-line react/no-children-prop
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel
+                    htmlFor={onFieldUpdate ? undefined : field.name}
+                    onClick={(e) => {
+                      if (onFieldUpdate) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
+                    {onFieldUpdate ? (
+                      <InlineEdit
+                        value={fieldConfig.label}
+                        onSave={(val) =>
+                          onFieldUpdate({ ...fieldConfig, label: val })
+                        }
+                        className="font-medium"
+                        placeholder="Field Label"
+                      />
+                    ) : (
+                      fieldConfig.label
+                    )}
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="email"
+                    value={field.state.value as string}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => {
+                      // Remove spaces from email input
+                      const valueWithoutSpaces = e.target.value.replace(
+                        /\s/g,
+                        ""
+                      );
+                      field.handleChange(valueWithoutSpaces);
+                    }}
+                    aria-invalid={isInvalid}
+                    placeholder={fieldConfig.placeholder}
+                    autoComplete="email"
+                  />
+                  {fieldConfig.description && (
+                    <FieldDescription>
+                      {fieldConfig.description}
+                    </FieldDescription>
+                  )}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
+        );
+
+      case "phone":
+        return (
+          <form.Field
+            key={fieldConfig.id}
+            name={fieldConfig.name}
+            // eslint-disable-next-line react/no-children-prop
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel
+                    htmlFor={onFieldUpdate ? undefined : field.name}
+                    onClick={(e) => {
+                      if (onFieldUpdate) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
+                    {onFieldUpdate ? (
+                      <InlineEdit
+                        value={fieldConfig.label}
+                        onSave={(val) =>
+                          onFieldUpdate({ ...fieldConfig, label: val })
+                        }
+                        className="font-medium"
+                        placeholder="Field Label"
+                      />
+                    ) : (
+                      fieldConfig.label
+                    )}
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="tel"
+                    value={formatPhoneNumber(field.state.value as string)}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      // Preserve + for international numbers
+                      const hasPlus = input.startsWith("+");
+                      const formatted = formatPhoneNumber(input);
+                      // Store digits with + prefix if it was international
+                      const digits = formatted.replace(/\D/g, "");
+                      const storedValue =
+                        hasPlus && digits.length > 0 ? `+${digits}` : digits;
+                      field.handleChange(storedValue);
+                    }}
+                    aria-invalid={isInvalid}
+                    placeholder={fieldConfig.placeholder}
+                    autoComplete="tel"
+                  />
+                  {fieldConfig.description && (
+                    <FieldDescription>
+                      {fieldConfig.description}
+                    </FieldDescription>
+                  )}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
+        );
+
       case "number":
         return (
           <form.Field
@@ -110,8 +308,27 @@ export function FormRenderer({
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>
-                    {fieldConfig.label}
+                  <FieldLabel
+                    htmlFor={onFieldUpdate ? undefined : field.name}
+                    onClick={(e) => {
+                      if (onFieldUpdate) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
+                    {onFieldUpdate ? (
+                      <InlineEdit
+                        value={fieldConfig.label}
+                        onSave={(val) =>
+                          onFieldUpdate({ ...fieldConfig, label: val })
+                        }
+                        className="font-medium"
+                        placeholder="Field Label"
+                      />
+                    ) : (
+                      fieldConfig.label
+                    )}
                   </FieldLabel>
                   <Input
                     id={field.name}
@@ -148,8 +365,27 @@ export function FormRenderer({
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>
-                    {fieldConfig.label}
+                  <FieldLabel
+                    htmlFor={onFieldUpdate ? undefined : field.name}
+                    onClick={(e) => {
+                      if (onFieldUpdate) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
+                    {onFieldUpdate ? (
+                      <InlineEdit
+                        value={fieldConfig.label}
+                        onSave={(val) =>
+                          onFieldUpdate({ ...fieldConfig, label: val })
+                        }
+                        className="font-medium"
+                        placeholder="Field Label"
+                      />
+                    ) : (
+                      fieldConfig.label
+                    )}
                   </FieldLabel>
                   <Textarea
                     id={field.name}
@@ -184,8 +420,27 @@ export function FormRenderer({
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>
-                    {fieldConfig.label}
+                  <FieldLabel
+                    htmlFor={onFieldUpdate ? undefined : field.name}
+                    onClick={(e) => {
+                      if (onFieldUpdate) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
+                    {onFieldUpdate ? (
+                      <InlineEdit
+                        value={fieldConfig.label}
+                        onSave={(val) =>
+                          onFieldUpdate({ ...fieldConfig, label: val })
+                        }
+                        className="font-medium"
+                        placeholder="Field Label"
+                      />
+                    ) : (
+                      fieldConfig.label
+                    )}
                   </FieldLabel>
                   <Select
                     name={field.name}
@@ -231,7 +486,28 @@ export function FormRenderer({
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <FieldSet>
-                  <FieldLegend variant="label">{fieldConfig.label}</FieldLegend>
+                  <FieldLegend
+                    variant="label"
+                    onClick={(e) => {
+                      if (onFieldUpdate) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
+                    {onFieldUpdate ? (
+                      <InlineEdit
+                        value={fieldConfig.label}
+                        onSave={(val) =>
+                          onFieldUpdate({ ...fieldConfig, label: val })
+                        }
+                        className="font-medium"
+                        placeholder="Field Label"
+                      />
+                    ) : (
+                      fieldConfig.label
+                    )}
+                  </FieldLegend>
                   {fieldConfig.description && (
                     <FieldDescription>
                       {fieldConfig.description}
@@ -239,38 +515,39 @@ export function FormRenderer({
                   )}
                   <FieldGroup data-slot="checkbox-group">
                     {fieldConfig.options.map((option) => (
-                      <Field
+                      <FieldLabel
                         key={option.value}
-                        orientation="horizontal"
-                        data-invalid={isInvalid}
+                        htmlFor={`${field.name}-${option.value}`}
                       >
-                        <Checkbox
-                          id={`${field.name}-${option.value}`}
-                          name={field.name}
-                          aria-invalid={isInvalid}
-                          checked={(field.state.value as string[]).includes(
-                            option.value
-                          )}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              field.pushValue(option.value as never);
-                            } else {
-                              const index = (
-                                field.state.value as string[]
-                              ).indexOf(option.value);
-                              if (index > -1) {
-                                field.removeValue(index);
-                              }
-                            }
-                          }}
-                        />
-                        <FieldLabel
-                          htmlFor={`${field.name}-${option.value}`}
-                          className="font-normal"
+                        <Field
+                          orientation="horizontal"
+                          data-invalid={isInvalid}
                         >
-                          {option.label}
-                        </FieldLabel>
-                      </Field>
+                          <FieldContent>
+                            <span className="text-sm">{option.label}</span>
+                          </FieldContent>
+                          <Checkbox
+                            id={`${field.name}-${option.value}`}
+                            name={field.name}
+                            aria-invalid={isInvalid}
+                            checked={(field.state.value as string[]).includes(
+                              option.value
+                            )}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                field.pushValue(option.value as never);
+                              } else {
+                                const index = (
+                                  field.state.value as string[]
+                                ).indexOf(option.value);
+                                if (index > -1) {
+                                  field.removeValue(index);
+                                }
+                              }
+                            }}
+                          />
+                        </Field>
+                      </FieldLabel>
                     ))}
                   </FieldGroup>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -291,7 +568,28 @@ export function FormRenderer({
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <FieldSet>
-                  <FieldLegend variant="label">{fieldConfig.label}</FieldLegend>
+                  <FieldLegend
+                    variant="label"
+                    onClick={(e) => {
+                      if (onFieldUpdate) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
+                    {onFieldUpdate ? (
+                      <InlineEdit
+                        value={fieldConfig.label}
+                        onSave={(val) =>
+                          onFieldUpdate({ ...fieldConfig, label: val })
+                        }
+                        className="font-medium"
+                        placeholder="Field Label"
+                      />
+                    ) : (
+                      fieldConfig.label
+                    )}
+                  </FieldLegend>
                   {fieldConfig.description && (
                     <FieldDescription>
                       {fieldConfig.description}
@@ -325,6 +623,55 @@ export function FormRenderer({
                   </RadioGroup>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </FieldSet>
+              );
+            }}
+          />
+        );
+
+      case "yes-no":
+        return (
+          <form.Field
+            key={fieldConfig.id}
+            name={fieldConfig.name}
+            // eslint-disable-next-line react/no-children-prop
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              const value = field.state.value as boolean | undefined;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel>{fieldConfig.label}</FieldLabel>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant={value === true ? "default" : "outline"}
+                      onClick={() => field.handleChange(true)}
+                      className={cn(
+                        "flex-1 py-6",
+                        value === true && "border border-transparent"
+                      )}
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={value === false ? "default" : "outline"}
+                      onClick={() => field.handleChange(false)}
+                      className={cn(
+                        "flex-1 py-6",
+                        value === false && "border border-transparent"
+                      )}
+                    >
+                      No
+                    </Button>
+                  </div>
+                  {fieldConfig.description && (
+                    <FieldDescription>
+                      {fieldConfig.description}
+                    </FieldDescription>
+                  )}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
               );
             }}
           />

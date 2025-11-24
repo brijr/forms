@@ -11,6 +11,7 @@ export function generateFieldSchema(field: FieldConfig): z.ZodTypeAny {
   switch (field.type) {
     case "text":
     case "email":
+    case "phone":
     case "textarea":
       schema = z.string();
       break;
@@ -35,6 +36,7 @@ export function generateFieldSchema(field: FieldConfig): z.ZodTypeAny {
       break;
 
     case "checkbox":
+    case "yes-no":
     case "switch":
       schema = z.boolean();
       break;
@@ -204,10 +206,13 @@ export function getDefaultValues(
           defaults[field.name] = "";
           break;
         case "number":
+          defaults[field.name] = field.defaultValue !== undefined ? field.defaultValue : 0;
+          break;
         case "slider":
           defaults[field.name] = 0;
           break;
         case "checkbox":
+        case "yes-no":
         case "switch":
           defaults[field.name] = false;
           break;

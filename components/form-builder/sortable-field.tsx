@@ -4,7 +4,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { FieldConfig, FieldOption } from "@/lib/form-config";
 import { Button } from "@/components/ui/button";
-import { GripVertical, Trash2, Copy, Settings2, Plus, X } from "lucide-react";
+import { GripVertical, Trash2, Copy, Settings2, Plus, X, Type, Mail, Phone, Hash, AlignLeft, ChevronDownCircle, CheckSquare, CircleDot, SquareCheck, ToggleRight, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { FieldEditor } from "./field-editor";
 import { InlineEdit } from "@/components/ui/inline-edit";
@@ -82,15 +83,49 @@ export function SortableField({
     }
   };
 
+  const getFieldTypeIcon = () => {
+    switch (field.type) {
+      case "text":
+        return Type;
+      case "email":
+        return Mail;
+      case "phone":
+        return Phone;
+      case "number":
+        return Hash;
+      case "textarea":
+        return AlignLeft;
+      case "select":
+        return ChevronDownCircle;
+      case "checkbox-group":
+        return CheckSquare;
+      case "radio":
+        return CircleDot;
+      case "yes-no":
+        return CircleDot;
+      case "checkbox":
+        return SquareCheck;
+      case "switch":
+        return ToggleRight;
+      case "slider":
+        return SlidersHorizontal;
+      default:
+        return Type;
+    }
+  };
+
+  const FieldTypeIcon = getFieldTypeIcon();
+
   const renderFieldPreview = () => {
     switch (field.type) {
       case "text":
       case "email":
+      case "phone":
       case "number":
         return (
           <Input
             disabled
-            type={field.type}
+            type={field.type === "phone" ? "tel" : field.type}
             className="cursor-pointer bg-muted/20"
           />
         );
@@ -108,15 +143,13 @@ export function SortableField({
         // Let's show "Select Options:" followed by editable list.
         return (
           <div className="space-y-2">
-            <div className="border rounded-md p-2 bg-muted/10 space-y-2">
-                 <p className="text-xs text-muted-foreground uppercase font-semibold">Dropdown Options</p>
                  {field.options.map((opt, idx) => (
                     <div key={idx} className="flex items-center gap-2 group/option">
                         <span className="text-sm text-muted-foreground w-4 text-center">{idx + 1}.</span>
                         <InlineEdit
                             value={opt.label}
                             onSave={(val) => handleOptionUpdate(idx, val)}
-                            className="flex-1 text-sm bg-background border border-transparent hover:border-border px-2 py-1"
+                            className="flex-1 text-base"
                         />
                          <Button
                             variant="ghost"
@@ -142,7 +175,6 @@ export function SortableField({
                 >
                     <Plus className="h-3 w-3 mr-1" /> Add Option
                  </Button>
-            </div>
           </div>
         );
       case "checkbox-group":
@@ -154,7 +186,7 @@ export function SortableField({
                 <InlineEdit
                     value={opt.label}
                     onSave={(val) => handleOptionUpdate(idx, val)}
-                    className="flex-1 text-sm"
+                    className="flex-1 text-base"
                 />
                  <Button
                     variant="ghost"
@@ -176,7 +208,7 @@ export function SortableField({
                     e.stopPropagation();
                     handleAddOption();
                 }}
-                className="h-7 text-xs text-muted-foreground ml-6"
+                className="h-7 text-xs text-muted-foreground"
             >
                 <Plus className="h-3 w-3 mr-1" /> Add Option
             </Button>
@@ -214,19 +246,31 @@ export function SortableField({
                       e.stopPropagation();
                       handleAddOption();
                   }}
-                  className="h-7 text-xs text-muted-foreground ml-6"
+                  className="h-7 text-xs text-muted-foreground"
               >
                   <Plus className="h-3 w-3 mr-1" /> Add Option
               </Button>
             </div>
           </RadioGroup>
         );
+      case "yes-no":
+        return (
+          <div className="flex gap-2">
+            <Button variant="outline" disabled className="flex-1 py-6">
+              Yes
+            </Button>
+            <Button variant="outline" disabled className="flex-1 py-6">
+              No
+            </Button>
+          </div>
+        );
       case "checkbox":
         return (
           <div className="flex items-center space-x-2">
             <Checkbox disabled id={field.id} />
-             {/* Note: Checkbox label usually is the field label itself, handling that below */}
-            <Label htmlFor={field.id} className="text-muted-foreground">(Check Label above)</Label>
+            <Label htmlFor={field.id} className="text-sm">
+              {field.label || "Checkbox"}
+            </Label>
           </div>
         );
       case "switch":
@@ -286,7 +330,7 @@ export function SortableField({
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-start gap-2">
       {/* Drag Handle */}
       <div
         {...attributes}
@@ -307,43 +351,51 @@ export function SortableField({
       >
         {/* Content */}
         <div className="flex-1 space-y-3">
-        {field.type !== "checkbox" && field.type !== "switch" && (
+        {(field.type !== "checkbox" && field.type !== "switch") && (
           <div className="space-y-1">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
                  <InlineEdit
                     value={field.label}
                     onSave={(val) => onUpdate({ ...field, label: val })}
                     className="font-medium text-base text-foreground"
                     placeholder="Field Label"
                 />
-                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-                  <Checkbox
-                    id={`${field.id}-required`}
-                    checked={field.validation?.required ?? false}
-                    onCheckedChange={(checked) =>
-                      onUpdate({
-                        ...field,
-                        validation: {
-                          ...field.validation,
-                          required: checked === true,
-                        },
-                      })
-                    }
-                  />
-                  <Label
-                    htmlFor={`${field.id}-required`}
-                    className="text-[10px] font-normal cursor-pointer"
-                  >
-                    Required
-                  </Label>
+                {/* Field Type Icon */}
+                <div className="flex items-center gap-2 text-muted-foreground/60">
+                  <FieldTypeIcon className="h-4 w-4" title={field.type} />
+                  <span className="text-[10px] uppercase">{field.type}</span>
                 </div>
             </div>
 
              <InlineEdit
                 value={field.description || ""}
                 onSave={(val) => onUpdate({ ...field, description: val })}
-                className="text-sm text-muted-foreground"
-                placeholder="Description (optional)"
+                className="text-muted-foreground"
+                placeholder="Description"
+            />
+          </div>
+        )}
+        {(field.type === "checkbox" || field.type === "switch") && (
+          <div className="space-y-1">
+            <div className="flex items-center justify-between gap-2">
+                 <InlineEdit
+                    value={field.label}
+                    onSave={(val) => onUpdate({ ...field, label: val })}
+                    className="font-medium text-base text-foreground"
+                    placeholder="Field Label"
+                />
+                {/* Field Type Icon */}
+                <div className="flex items-center gap-2 text-muted-foreground/60">
+                  <FieldTypeIcon className="h-4 w-4" title={field.type} />
+                  <span className="text-[10px] uppercase">{field.type}</span>
+                </div>
+            </div>
+
+             <InlineEdit
+                value={field.description || ""}
+                onSave={(val) => onUpdate({ ...field, description: val })}
+                className="text-muted-foreground"
+                placeholder="Description"
             />
           </div>
         )}
@@ -352,14 +404,14 @@ export function SortableField({
         <div className="relative"> {/* Removed pointer-events-none to allow interaction with inline edits */}
             {renderFieldPreview()}
             {/* Inline Placeholder Edit (only for inputs) */}
-            {(field.type === "text" || field.type === "email" || field.type === "number") && (
+            {(field.type === "text" || field.type === "email" || field.type === "phone" || field.type === "number") && (
                 <div className="absolute left-3 top-0 h-9 flex items-center pointer-events-none">
                     <div className="pointer-events-auto">
                         <InlineEdit
                             value={field.placeholder || ""}
                             onSave={(val) => onUpdate({ ...field, placeholder: val })}
-                            className="text-sm text-muted-foreground font-normal"
-                            placeholder="Placeholder text..."
+                            className="text-muted-foreground font-normal"
+                            placeholder="Placeholder"
                         />
                     </div>
                 </div>
@@ -370,13 +422,38 @@ export function SortableField({
                         <InlineEdit
                             value={field.placeholder || ""}
                             onSave={(val) => onUpdate({ ...field, placeholder: val })}
-                            className="text-sm text-muted-foreground font-normal"
-                            placeholder="Placeholder text..."
+                            className="text-muted-foreground font-normal"
+                            placeholder="Placeholder"
                         />
                     </div>
                 </div>
             )}
         </div>
+
+        {/* Required Checkbox - Below Placeholder */}
+        {(field.type === "text" || field.type === "email" || field.type === "phone" || field.type === "number" || field.type === "textarea") && (
+          <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+            <Checkbox
+              id={`${field.id}-required`}
+              checked={field.validation?.required ?? false}
+              onCheckedChange={(checked) =>
+                onUpdate({
+                  ...field,
+                  validation: {
+                    ...field.validation,
+                    required: checked === true,
+                  },
+                })
+              }
+            />
+            <Label
+              htmlFor={`${field.id}-required`}
+              className="text-[10px] font-normal cursor-pointer"
+            >
+              Required
+            </Label>
+          </div>
+        )}
       </div>
       </div>
 

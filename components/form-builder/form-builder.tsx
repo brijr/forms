@@ -23,6 +23,7 @@ import {
   PlusIcon,
   TypeIcon,
   MailIcon,
+  PhoneIcon,
   HashIcon,
   AlignLeftIcon,
   ChevronDownCircleIcon,
@@ -51,6 +52,7 @@ const TOOLBOX_CATEGORIES: { name: string; items: ToolboxItem[] }[] = [
     items: [
       { type: "text", label: "Text", icon: TypeIcon },
       { type: "email", label: "Email", icon: MailIcon },
+      { type: "phone", label: "Phone", icon: PhoneIcon },
       { type: "number", label: "Number", icon: HashIcon },
       { type: "textarea", label: "Textarea", icon: AlignLeftIcon },
     ],
@@ -60,8 +62,9 @@ const TOOLBOX_CATEGORIES: { name: string; items: ToolboxItem[] }[] = [
     items: [
       { type: "select", label: "Select", icon: ChevronDownCircleIcon },
       { type: "radio", label: "Radio", icon: CircleDotIcon },
+      { type: "yes-no", label: "Yes/No", icon: CircleDotIcon },
       { type: "checkbox-group", label: "Checkboxes", icon: CheckSquareIcon },
-      { type: "checkbox", label: "Single Check", icon: SquareCheckIcon },
+      { type: "checkbox", label: "Checkbox", icon: SquareCheckIcon },
       { type: "switch", label: "Switch", icon: ToggleRightIcon },
       { type: "slider", label: "Slider", icon: SlidersHorizontalIcon },
     ],
@@ -191,13 +194,13 @@ export function FormBuilder() {
       {/* Header */}
       <div className="border-b px-6 py-4 bg-background">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4">
-          <div className="flex-1 space-y-1">
+          <div className="flex-1 space-y-0.5">
             <Input
               value={formConfig.title}
               onChange={(e) =>
                 setFormConfig({ ...formConfig, title: e.target.value })
               }
-              className="text-xl font-semibold border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
+              className="text-base border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
               placeholder="Form Title"
             />
             <Input
@@ -205,7 +208,7 @@ export function FormBuilder() {
               onChange={(e) =>
                 setFormConfig({ ...formConfig, description: e.target.value })
               }
-              className="text-sm text-muted-foreground border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
+              className="text-base text-muted-foreground border-none shadow-none px-0 focus-visible:ring-0 h-auto bg-transparent"
               placeholder="Form description (optional)"
             />
           </div>
@@ -343,8 +346,18 @@ export function FormBuilder() {
 
         {viewMode === "preview" && (
           <div className="flex-1 overflow-y-auto bg-muted/20 p-8">
-            <div className="mx-auto max-w-2xl bg-background rounded-lg shadow-sm border p-8">
-              <FormRenderer config={formConfig} />
+            <div className="mx-auto max-w-2xl">
+              <FormRenderer
+                config={formConfig}
+                onFieldUpdate={(updatedField) => {
+                  setFormConfig({
+                    ...formConfig,
+                    fields: formConfig.fields.map((f) =>
+                      f.id === updatedField.id ? updatedField : f
+                    ),
+                  });
+                }}
+              />
             </div>
           </div>
         )}
