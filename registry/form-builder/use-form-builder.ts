@@ -7,6 +7,11 @@ import { toast } from "sonner";
 import type { FormConfig, FieldType, FieldConfig } from "./lib/form-config";
 import { createDefaultField, createEmptyForm } from "./lib/form-config";
 import { downloadFormConfig, parseFormConfig } from "./lib/form-utils";
+import {
+  isToolboxItem,
+  getFieldTypeFromToolboxId,
+  CANVAS_DROP_ZONE_ID,
+} from "./lib/dnd-utils";
 
 export type ViewMode = "builder" | "preview" | "json";
 
@@ -18,6 +23,19 @@ export function useFormBuilder() {
   const addField = (type: FieldType) => {
     const newField = createDefaultField(type, formConfig.fields.length);
     setFormConfig((prev) => ({ ...prev, fields: [...prev.fields, newField] }));
+    setSelectedFieldId(newField.id);
+    toast.success("Field added", {
+      description: `${type} field added to the form`,
+    });
+  };
+
+  const addFieldAtIndex = (type: FieldType, index: number) => {
+    const newField = createDefaultField(type, formConfig.fields.length);
+    setFormConfig((prev) => {
+      const fields = [...prev.fields];
+      fields.splice(index, 0, newField);
+      return { ...prev, fields };
+    });
     setSelectedFieldId(newField.id);
     toast.success("Field added", {
       description: `${type} field added to the form`,
@@ -64,13 +82,41 @@ export function useFormBuilder() {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active.id === over?.id) return;
 
-    setFormConfig((prev) => {
-      const oldIndex = prev.fields.findIndex((f) => f.id === active.id);
-      const newIndex = prev.fields.findIndex((f) => f.id === over?.id);
-      return { ...prev, fields: arrayMove(prev.fields, oldIndex, newIndex) };
-    });
+    if (!over) return;
+
+    const activeId = active.id as string;
+    const overId = over.id as string;
+
+    if (isToolboxItem(activeId)) {
+      const fieldType = getFieldTypeFromToolboxId(activeId);
+
+      if (overId === CANVAS_DROP_ZONE_ID) {
+        addField(fieldType);
+        return;
+      }
+
+      const overIndex = formConfig.fields.findIndex((f) => f.id === overId);
+      if (overIndex !== -1) {
+        addFieldAtIndex(fieldType, overIndex);
+        return;
+      }
+
+      addField(fieldType);
+      return;
+    }
+
+    if (activeId !== overId) {
+      const oldIndex = formConfig.fields.findIndex((f) => f.id === activeId);
+      const newIndex = formConfig.fields.findIndex((f) => f.id === overId);
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        setFormConfig((prev) => ({
+          ...prev,
+          fields: arrayMove(prev.fields, oldIndex, newIndex),
+        }));
+      }
+    }
   };
 
   const handleExport = () => downloadFormConfig(formConfig);
